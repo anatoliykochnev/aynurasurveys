@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<libraries>
+    <!--
+        Aynura.Surveys (local_aynurasurveys) does not ship any third-party
+        JavaScript or PHP libraries. The AMD module uses only jQuery, which
+        is provided by Moodle core.
+    -->
+</libraries>
