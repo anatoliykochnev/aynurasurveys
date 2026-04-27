@@ -115,12 +115,6 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026041100, 'local', 'aynurasurveys');
     }
 
-    // 2026041200 — version bump, no schema changes.
-    if ($oldversion < 2026041200) {
-        upgrade_plugin_savepoint(true, 2026041200, 'local', 'aynurasurveys');
-    }
-
-    // 2026041300 — add delay_minutes to rules, show_after to pending.
     if ($oldversion < 2026041300) {
         // Local_aynurasurveys_rules: add delay_minutes.
         $rulestable = new xmldb_table('local_aynurasurveys_rules');
@@ -139,68 +133,6 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026041300, 'local', 'aynurasurveys');
     }
 
-    // 2026041301 — UI redesign, no schema changes.
-    if ($oldversion < 2026041301) {
-        upgrade_plugin_savepoint(true, 2026041301, 'local', 'aynurasurveys');
-    }
-
-    if ($oldversion < 2026041302) {
-        upgrade_plugin_savepoint(true, 2026041302, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041303) {
-        upgrade_plugin_savepoint(true, 2026041303, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041304) {
-        upgrade_plugin_savepoint(true, 2026041304, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041305) {
-        upgrade_plugin_savepoint(true, 2026041305, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041306) {
-        upgrade_plugin_savepoint(true, 2026041306, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041307) {
-        upgrade_plugin_savepoint(true, 2026041307, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041308) {
-        upgrade_plugin_savepoint(true, 2026041308, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041309) {
-        upgrade_plugin_savepoint(true, 2026041309, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041310) {
-        upgrade_plugin_savepoint(true, 2026041310, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041311) {
-        upgrade_plugin_savepoint(true, 2026041311, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041312) {
-        upgrade_plugin_savepoint(true, 2026041312, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041313) {
-        upgrade_plugin_savepoint(true, 2026041313, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041314) {
-        upgrade_plugin_savepoint(true, 2026041314, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041315) {
-        upgrade_plugin_savepoint(true, 2026041315, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041316) {
-        upgrade_plugin_savepoint(true, 2026041316, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041317) {
-        upgrade_plugin_savepoint(true, 2026041317, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041318) {
-        upgrade_plugin_savepoint(true, 2026041318, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041319) {
-        upgrade_plugin_savepoint(true, 2026041319, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041320) {
-        upgrade_plugin_savepoint(true, 2026041320, 'local', 'aynurasurveys');
-    }
     if ($oldversion < 2026041321) {
         $table = new xmldb_table('local_aynurasurveys_rules');
         $field = new xmldb_field('rulename', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'trigger');
@@ -209,51 +141,7 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2026041321, 'local', 'aynurasurveys');
     }
-    if ($oldversion < 2026041322) {
-        upgrade_plugin_savepoint(true, 2026041322, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041323) {
-        upgrade_plugin_savepoint(true, 2026041323, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041324) {
-        upgrade_plugin_savepoint(true, 2026041324, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041325) {
-        upgrade_plugin_savepoint(true, 2026041325, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041326) {
-        upgrade_plugin_savepoint(true, 2026041326, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041327) {
-        upgrade_plugin_savepoint(true, 2026041327, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041328) {
-        upgrade_plugin_savepoint(true, 2026041328, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041329) {
-        upgrade_plugin_savepoint(true, 2026041329, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041330) {
-        upgrade_plugin_savepoint(true, 2026041330, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041331) {
-        upgrade_plugin_savepoint(true, 2026041331, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041332) {
-        upgrade_plugin_savepoint(true, 2026041332, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041333) {
-        upgrade_plugin_savepoint(true, 2026041333, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041334) {
-        upgrade_plugin_savepoint(true, 2026041334, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041335) {
-        upgrade_plugin_savepoint(true, 2026041335, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026041336) {
-        upgrade_plugin_savepoint(true, 2026041336, 'local', 'aynurasurveys');
-    }
+
     if ($oldversion < 2026041337) {
         // Rename: local_hubsurveys -> local_aynurasurveys.
         // DB tables are created fresh on new install via install.xml.
@@ -273,101 +161,11 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2026041337, 'local', 'aynurasurveys');
     }
-    if ($oldversion < 2026042401) {
-        upgrade_plugin_savepoint(true, 2026042401, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042402) {
-        upgrade_plugin_savepoint(true, 2026042402, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042403) {
-        upgrade_plugin_savepoint(true, 2026042403, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042404) {
-        upgrade_plugin_savepoint(true, 2026042404, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042405) {
-        upgrade_plugin_savepoint(true, 2026042405, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042406) {
-        upgrade_plugin_savepoint(true, 2026042406, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042407) {
-        upgrade_plugin_savepoint(true, 2026042407, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042408) {
-        upgrade_plugin_savepoint(true, 2026042408, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042409) {
-        upgrade_plugin_savepoint(true, 2026042409, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042410) {
-        upgrade_plugin_savepoint(true, 2026042410, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042411) {
-        upgrade_plugin_savepoint(true, 2026042411, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042412) {
-        upgrade_plugin_savepoint(true, 2026042412, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042413) {
-        upgrade_plugin_savepoint(true, 2026042413, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042414) {
-        upgrade_plugin_savepoint(true, 2026042414, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042415) {
-        upgrade_plugin_savepoint(true, 2026042415, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042416) {
-        upgrade_plugin_savepoint(true, 2026042416, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042417) {
-        upgrade_plugin_savepoint(true, 2026042417, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042418) {
-        upgrade_plugin_savepoint(true, 2026042418, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042419) {
-        upgrade_plugin_savepoint(true, 2026042419, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042420) {
-        upgrade_plugin_savepoint(true, 2026042420, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042421) {
-        upgrade_plugin_savepoint(true, 2026042421, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042422) {
-        upgrade_plugin_savepoint(true, 2026042422, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042423) {
-        upgrade_plugin_savepoint(true, 2026042423, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042424) {
-        upgrade_plugin_savepoint(true, 2026042424, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042425) {
-        upgrade_plugin_savepoint(true, 2026042425, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042426) {
-        upgrade_plugin_savepoint(true, 2026042426, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042427) {
-        upgrade_plugin_savepoint(true, 2026042427, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042429) {
-        upgrade_plugin_savepoint(true, 2026042429, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042430) {
-        upgrade_plugin_savepoint(true, 2026042430, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042431) {
-        upgrade_plugin_savepoint(true, 2026042431, 'local', 'aynurasurveys');
-    }
-    if ($oldversion < 2026042402) {
-        upgrade_plugin_savepoint(true, 2026042402, 'local', 'aynurasurveys');
-    }
+
     if ($oldversion < 2026042432) {
         upgrade_plugin_savepoint(true, 2026042432, 'local', 'aynurasurveys');
+    
     }
+
     return true;
 }
