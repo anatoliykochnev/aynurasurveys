@@ -256,14 +256,16 @@ class trigger_manager {
         if ($isrepeating) {
             // Repeating triggers: only block if a pending record exists (survey queued but not seen yet).
             // Dismissed records are deleted, completed records allow re-queue on next event.
-            if ($DB->record_exists(
-                'local_aynurasurveys_pending',
-                [
-                    'userid' => $userid,
-                    'ruleid' => $rule->id,
-                    'status' => 'pending',
-                ]
-            )) {
+            if (
+                $DB->record_exists(
+                    'local_aynurasurveys_pending',
+                    [
+                        'userid' => $userid,
+                        'ruleid' => $rule->id,
+                        'status' => 'pending',
+                    ]
+                )
+            ) {
                 return true;
             }
         } else {

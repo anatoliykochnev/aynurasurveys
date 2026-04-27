@@ -89,7 +89,7 @@ class observer {
             trigger_manager::TRIGGER_UNENROLLED,
             $user,
             $courseid,
-                [
+            [
                 'coursename' => $course->fullname ?? '',
                 'courseshortname' => $course->shortname ?? '',
             ]
@@ -141,7 +141,7 @@ class observer {
             trigger_manager::TRIGGER_COURSE_STARTED,
             $user,
             $courseid,
-                [
+            [
                 'coursename' => $course->fullname,
                 'courseshortname' => $course->shortname,
             ]
@@ -170,7 +170,7 @@ class observer {
             trigger_manager::TRIGGER_COURSE_COMPLETED,
             $user,
             $courseid,
-                [
+            [
                 'coursename' => $course->fullname,
                 'courseshortname' => $course->shortname,
                 'completed_at' => date('c', time()),
@@ -279,9 +279,9 @@ class observer {
 
         // Only fire on completion (completionstate 1 = complete, 2 = complete with pass).
         // Note: for course_module_completion_updated:.
-        //   $event->objectid          = course_modules_completion.id (the completion record ID).
-        //   $event->contextinstanceid = course module ID (cmid).
-        //   $event->other['completionstate'] = the new state.
+        // $event->objectid          = course_modules_completion.id (the completion record ID).
+        // $event->contextinstanceid = course module ID (cmid).
+        // $event->other['completionstate'] = the new state.
         $completionstate = $event->other['completionstate'] ?? 0;
         if ($completionstate < 1) {
             return;
@@ -431,12 +431,17 @@ class observer {
 
         // Log quiz completion for days_after_quiz cron trigger.
         // Store in a lightweight way using the existing log table with a special status.
-        if (!$DB->record_exists('local_aynurasurveys_log', [
-            'userid' => $userid,
-            'trigger' => 'quiz_completion_recorded',
-            'courseid' => $courseid,
-            'surveyid' => (string) $quizid,
-        ])) {
+        if (
+            !$DB->record_exists(
+                'local_aynurasurveys_log',
+                [
+                    'userid' => $userid,
+                    'trigger' => 'quiz_completion_recorded',
+                    'courseid' => $courseid,
+                    'surveyid' => (string) $quizid,
+                ]
+            )
+        ) {
             $DB->insert_record('local_aynurasurveys_log', (object) [
                 'ruleid' => 0,
                 'userid' => $userid,
