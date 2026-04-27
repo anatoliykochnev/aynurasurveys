@@ -60,7 +60,7 @@ $pendingid = required_param('pendingid', PARAM_INT);
 
 // Load action is read-only — no sesskey needed.
 // ------------------------------------------------------------------
-// Action: load — returns full modal data for the pending survey
+// Action: load — returns full modal data for the pending survey.
 // Called by JS on init to avoid large js_call_amd payloads.
 // ------------------------------------------------------------------
 if ($action === 'load') {
@@ -94,7 +94,8 @@ if ($action === 'load') {
                 $questions = $fresh['questions'];
             }
         } catch (\Exception $e) {
-            // Fall through with whatever we have.
+            // Fall through with cached data if fresh fetch fails.
+            unset($e);
         }
     }
 
@@ -156,10 +157,10 @@ if (!$pending) {
 }
 
 // ------------------------------------------------------------------
-// Action: dismiss
+// Action: dismiss.
 // ------------------------------------------------------------------
 if ($action === 'dismiss') {
-    // For repeating triggers (every_login, recurring, login_after_inactivity),
+    // For repeating triggers (every_login, recurring, login_after_inactivity),.
     // Delete the pending record so the trigger can re-queue next time.
     // For one-time triggers, mark dismissed to permanently block re-queuing.
     if (\local_aynurasurveys\trigger_manager::is_repeating($pending->trigger)) {
@@ -193,7 +194,7 @@ if ($action === 'dismiss') {
 }
 
 // ------------------------------------------------------------------
-// Action: submit
+// Action: submit.
 // ------------------------------------------------------------------
 if ($action === 'submit') {
     require_sesskey();

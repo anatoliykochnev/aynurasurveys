@@ -64,8 +64,10 @@ if ($hassiteconfig) {
     $settings->add(new admin_setting_heading(
         'local_aynurasurveys/redirect_notice',
         '',
-        html_writer::tag('div',
-            '👉 ' . html_writer::link($customurl,
+        html_writer::tag(
+            'div',
+            '👉 ' . html_writer::link(
+                $customurl,
                 'Open the Aynura.Surveys Settings page',
                 ['class' => 'btn btn-primary']
             ),

@@ -125,7 +125,7 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Main dispatch entry point
+    // Main dispatch entry point.
     // -----------------------------------------------------------------------
 
     /**
@@ -133,7 +133,8 @@ class trigger_manager {
      */
     public static function fire(
         string $trigger,
-        \stdClass $user, ?int $courseid = null,
+        \stdClass $user,
+        ?int $courseid = null,
         array $extra = []
     ): void {
         global $DB;
@@ -180,7 +181,7 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Validity period check
+    // Validity period check.
     // -----------------------------------------------------------------------
 
     /**
@@ -204,7 +205,7 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Scope check
+    // Scope check.
     // -----------------------------------------------------------------------
 
     /**
@@ -228,7 +229,7 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Frequency protection
+    // Frequency protection.
     // -----------------------------------------------------------------------
 
     /**
@@ -255,24 +256,30 @@ class trigger_manager {
         if ($isrepeating) {
             // Repeating triggers: only block if a pending record exists (survey queued but not seen yet).
             // Dismissed records are deleted, completed records allow re-queue on next event.
-            if ($DB->record_exists('local_aynurasurveys_pending', [
-                'userid' => $userid,
-                'ruleid' => $rule->id,
-                'status' => 'pending',
-            ])) {
+            if ($DB->record_exists(
+                'local_aynurasurveys_pending',
+                [
+                    'userid' => $userid,
+                    'ruleid' => $rule->id,
+                    'status' => 'pending',
+                ]
+            )) {
                 return true;
             }
         } else {
             // One-time triggers: block if any record exists (pending, completed, or dismissed).
             [$insql, $inparams] = $DB->get_in_or_equal(
                 ['pending', 'completed', 'dismissed'],
-                SQL_PARAMS_NAMED, 'st'
+                SQL_PARAMS_NAMED,
+                'st'
             );
-            if ($DB->record_exists_select(
-                'local_aynurasurveys_pending',
-                "userid = :uid AND ruleid = :rid AND status $insql",
-                array_merge(['uid' => $userid, 'rid' => $rule->id], $inparams)
-            )) {
+            if (
+                $DB->record_exists_select(
+                    'local_aynurasurveys_pending',
+                    "userid = :uid AND ruleid = :rid AND status $insql",
+                    array_merge(['uid' => $userid, 'rid' => $rule->id], $inparams)
+                )
+            ) {
                 return true;
             }
 
@@ -296,7 +303,7 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Dispatch — writes pending modal record
+    // Dispatch — writes pending modal record.
     // -----------------------------------------------------------------------
 
     /**
@@ -305,7 +312,8 @@ class trigger_manager {
     private static function dispatch(
         \stdClass $rule,
         \stdClass $user,
-        string $trigger, ?int $courseid,
+        string $trigger,
+        ?int $courseid,
         array $context
     ): void {
         global $DB;
@@ -361,7 +369,7 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Delivery log
+    // Delivery log.
     // -----------------------------------------------------------------------
 
     /**
@@ -370,8 +378,11 @@ class trigger_manager {
     private static function write_log(
         \stdClass $rule,
         int $userid,
-        string $trigger, ?int $courseid,
-        string $status, ?int $statuscode, ?string $response
+        string $trigger,
+        ?int $courseid,
+        string $status,
+        ?int $statuscode,
+        ?string $response
     ): void {
         global $DB;
 
@@ -389,7 +400,7 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Helpers
+    // Helpers.
     // -----------------------------------------------------------------------
 
     /**

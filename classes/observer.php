@@ -37,7 +37,7 @@ namespace local_aynurasurveys;
  */
 class observer {
     // -----------------------------------------------------------------------
-    // User-Based Triggers
+    // User-Based Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -64,7 +64,7 @@ class observer {
     }
 
     // -----------------------------------------------------------------------
-    // Enrollment-Based Triggers
+    // Enrollment-Based Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -88,7 +88,8 @@ class observer {
         trigger_manager::fire(
             trigger_manager::TRIGGER_UNENROLLED,
             $user,
-            $courseid, [
+            $courseid,
+                [
                 'coursename' => $course->fullname ?? '',
                 'courseshortname' => $course->shortname ?? '',
             ]
@@ -96,7 +97,7 @@ class observer {
     }
 
     // -----------------------------------------------------------------------
-    // Course Progress Triggers
+    // Course Progress Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -117,7 +118,8 @@ class observer {
         // Check if we have already fired a course_started for this user+course.
         $already = $DB->record_exists_select(
             'local_aynurasurveys_log',
-            'userid = :userid AND trigger = :trigger AND courseid = :courseid', [
+            'userid = :userid AND trigger = :trigger AND courseid = :courseid',
+            [
                 'userid' => $userid,
                 'trigger' => trigger_manager::TRIGGER_COURSE_STARTED,
                 'courseid' => $courseid,
@@ -138,7 +140,8 @@ class observer {
         trigger_manager::fire(
             trigger_manager::TRIGGER_COURSE_STARTED,
             $user,
-            $courseid, [
+            $courseid,
+                [
                 'coursename' => $course->fullname,
                 'courseshortname' => $course->shortname,
             ]
@@ -166,7 +169,8 @@ class observer {
         trigger_manager::fire(
             trigger_manager::TRIGGER_COURSE_COMPLETED,
             $user,
-            $courseid, [
+            $courseid,
+                [
                 'coursename' => $course->fullname,
                 'courseshortname' => $course->shortname,
                 'completed_at' => date('c', time()),
@@ -175,7 +179,7 @@ class observer {
     }
 
     // -----------------------------------------------------------------------
-    // Grade-Based Triggers
+    // Grade-Based Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -216,8 +220,8 @@ class observer {
             'item_name' => $gradeitem->itemname ?? '',
         ];
 
-        // --- grade_passed ---
-        // Load rules, check each threshold
+        // --- grade_passed ---.
+        // Load rules, check each threshold.
         $passedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_GRADE_PASSED,
             'enabled' => 1,
@@ -237,7 +241,7 @@ class observer {
             }
         }
 
-        // --- grade_failed ---
+        // --- grade_failed ---.
         $failedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_GRADE_FAILED,
             'enabled' => 1,
@@ -259,7 +263,7 @@ class observer {
     }
 
     // -----------------------------------------------------------------------
-    // Activity Completion Trigger
+    // Activity Completion Trigger.
     // -----------------------------------------------------------------------
 
     /**
@@ -339,7 +343,7 @@ class observer {
     }
 
     // -----------------------------------------------------------------------
-    // Quiz Triggers
+    // Quiz Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -398,7 +402,9 @@ class observer {
             if ($percentage >= $threshold) {
                 trigger_manager::fire(
                     trigger_manager::TRIGGER_QUIZ_PASSED,
-                    $user, $courseid, $context
+                    $user,
+                    $courseid,
+                    $context
                 );
                 break;
             }
@@ -415,7 +421,9 @@ class observer {
             if ($percentage < $threshold) {
                 trigger_manager::fire(
                     trigger_manager::TRIGGER_QUIZ_FAILED,
-                    $user, $courseid, $context
+                    $user,
+                    $courseid,
+                    $context
                 );
                 break;
             }

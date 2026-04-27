@@ -58,7 +58,7 @@ global $DB;
 $action = required_param('action', PARAM_ALPHANUMEXT);
 
 // ------------------------------------------------------------------
-// Action: conflict_check
+// Action: conflict_check.
 // ------------------------------------------------------------------
 if ($action === 'conflict_check') {
     $trigger    = required_param('trigger', PARAM_ALPHANUMEXT);
@@ -66,7 +66,7 @@ if ($action === 'conflict_check') {
 
     $today = mktime(0, 0, 0);
 
-    // Find other enabled, site-context, not-yet-expired rules for same trigger
+    // Find other enabled, site-context, not-yet-expired rules for same trigger.
     $sql = "SELECT r.id, r.surveyname, r.surveyid, r.trigger, r.valid_from, r.valid_until
               FROM {local_aynurasurveys_rules} r
              WHERE r.trigger = :trigger
@@ -101,7 +101,7 @@ if ($action === 'conflict_check') {
 }
 
 // ------------------------------------------------------------------
-// Action: completion_check
+// Action: completion_check.
 // ------------------------------------------------------------------
 if ($action === 'completion_check') {
     $courseidsraw = required_param('courseids', PARAM_RAW);
@@ -115,7 +115,9 @@ if ($action === 'completion_check') {
     $warnings = [];
     foreach ($courseids as $cid) {
         $course = $DB->get_record('course', ['id' => $cid], 'id, fullname, enablecompletion');
-        if (!$course) continue;
+        if (!$course) {
+            continue;
+        }
         if (empty($course->enablecompletion)) {
             $warnings[] = [
                 'courseid' => $cid,
@@ -129,8 +131,8 @@ if ($action === 'completion_check') {
 }
 
 // ------------------------------------------------------------------
-// Action: get_activities — returns activities with completion enabled
-// for given course IDs, grouped by course.
+// Action: get_activities — returns activities with completion enabled.
+// For given course IDs, grouped by course.
 // ------------------------------------------------------------------
 if ($action === 'get_activities') {
     $courseidsraw = required_param('courseids', PARAM_RAW);
@@ -144,9 +146,11 @@ if ($action === 'get_activities') {
     $activities = [];
     foreach ($courseids as $cid) {
         $course = $DB->get_record('course', ['id' => $cid], 'id, fullname, shortname');
-        if (!$course) continue;
+        if (!$course) {
+            continue;
+        }
 
-        // Get all course modules with completion enabled
+        // Get all course modules with completion enabled.
         $sql = "SELECT cm.id AS cmid, m.name AS modname, cm.instance, c.fullname AS coursename
                   FROM {course_modules} cm
                   JOIN {modules} m ON m.id = cm.module
@@ -161,7 +165,9 @@ if ($action === 'get_activities') {
         foreach ($cms as $cm) {
             // Get activity name from its own table.
             $name = $DB->get_field($cm->modname, 'name', ['id' => $cm->instance]);
-            if (!$name) continue;
+            if (!$name) {
+                continue;
+            }
 
             $activities[] = [
                 'cmid' => (int) $cm->cmid,
@@ -178,9 +184,11 @@ if ($action === 'get_activities') {
     if (empty($activities)) {
         foreach ($courseids as $cid) {
             $totalcms = $DB->count_records('course_modules', ['course' => $cid]);
-            $completioncms = $DB->count_records_select('course_modules',
+            $completioncms = $DB->count_records_select(
+                'course_modules',
                 'course = :cid AND completion > 0 AND deletioninprogress = 0',
-                ['cid' => $cid]);
+                ['cid' => $cid]
+            );
             $debug[] = "Course {$cid}: {$totalcms} total modules, {$completioncms} with completion enabled";
         }
     }

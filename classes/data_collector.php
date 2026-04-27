@@ -64,14 +64,16 @@ class data_collector {
         }
 
         // Remove empty top-level keys to keep payload clean.
-        return array_filter($metadata, function($v) {
-            if (is_array($v)) return !empty($v);
+        return array_filter($metadata, function ($v) {
+            if (is_array($v)) {
+                return !empty($v);
+            }
             return $v !== null && $v !== '';
         });
     }
 
     // -----------------------------------------------------------------------
-    // Profile fields
+    // Profile fields.
     // -----------------------------------------------------------------------
 
     /**
@@ -87,7 +89,7 @@ class data_collector {
 
         $profile = [];
 
-        // --- Standard Moodle user fields ---
+        // --- Standard Moodle user fields ---.
         $standardfields = [
             'username' => 'username',
             'city' => 'city',
@@ -110,7 +112,7 @@ class data_collector {
             }
         }
 
-        // --- Custom user profile fields ---
+        // --- Custom user profile fields ---.
         try {
             profile_load_data($user);
         } catch (\Exception $e) {
@@ -120,10 +122,14 @@ class data_collector {
         $fields = $DB->get_records('user_info_field', [], 'sortorder ASC', 'id, shortname, datatype');
         foreach ($fields as $field) {
             $prop = 'profile_field_' . $field->shortname;
-            if (!isset($user->$prop)) continue;
+            if (!isset($user->$prop)) {
+                continue;
+            }
 
             $raw = $user->$prop;
-            if ($raw === null || $raw === '' || $raw === false) continue;
+            if ($raw === null || $raw === '' || $raw === false) {
+                continue;
+            }
 
             switch ($field->datatype) {
                 case 'datetime':
@@ -142,7 +148,7 @@ class data_collector {
     }
 
     // -----------------------------------------------------------------------
-    // Course data
+    // Course data.
     // -----------------------------------------------------------------------
 
     /**
@@ -154,8 +160,11 @@ class data_collector {
     private static function get_course_data(int $courseid): array {
         global $DB;
 
-        $course = $DB->get_record('course', ['id' => $courseid],
-            'id, fullname, shortname, startdate, enddate, category');
+        $course = $DB->get_record(
+            'course',
+            ['id' => $courseid],
+            'id, fullname, shortname, startdate, enddate, category'
+        );
         if (!$course) {
             return [];
         }
@@ -170,7 +179,7 @@ class data_collector {
             'fullname' => $course->fullname,
             'shortname' => $course->shortname,
             'category' => $categoryname,
-            'start_date'=> $course->startdate ? date('Y-m-d', $course->startdate) : null,
+            'start_date' => $course->startdate ? date('Y-m-d', $course->startdate) : null,
             'end_date' => $course->enddate ? date('Y-m-d', $course->enddate) : null,
         ];
 
@@ -201,7 +210,9 @@ class data_collector {
             foreach ($datas as $data) {
                 $field = $data->get_field();
                 $val   = $data->export_value();
-                if ($val === null || $val === '') continue;
+                if ($val === null || $val === '') {
+                    continue;
+                }
                 $result[$field->get('shortname')] = (string) $val;
             }
             return $result;
@@ -211,7 +222,7 @@ class data_collector {
     }
 
     // -----------------------------------------------------------------------
-    // Cohorts
+    // Cohorts.
     // -----------------------------------------------------------------------
 
     /**
@@ -237,7 +248,7 @@ class data_collector {
     }
 
     // -----------------------------------------------------------------------
-    // Moodle context
+    // Moodle context.
     // -----------------------------------------------------------------------
 
     /**

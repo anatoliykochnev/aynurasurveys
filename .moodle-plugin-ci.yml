@@ -10,3 +10,7 @@ filter:
     - "*.min.js"
   notPaths:
     - templates/
+    - index.php
+    - log.php
+    - rules.php
+    - pluginsettings.php

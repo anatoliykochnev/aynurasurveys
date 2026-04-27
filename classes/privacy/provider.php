@@ -47,7 +47,7 @@ class provider implements
     \core_privacy\local\request\core_userlist_provider,
     \core_privacy\local\request\plugin\provider {
     // -----------------------------------------------------------------------
-    // Metadata
+    // Metadata.
     // -----------------------------------------------------------------------
 
     /**
@@ -69,7 +69,7 @@ class provider implements
     }
 
     // -----------------------------------------------------------------------
-    // Context discovery
+    // Context discovery.
     // -----------------------------------------------------------------------
 
     /**
@@ -94,7 +94,7 @@ class provider implements
     }
 
     // -----------------------------------------------------------------------
-    // Export
+    // Export.
     // -----------------------------------------------------------------------
 
     /**
@@ -109,9 +109,11 @@ class provider implements
             }
             $userid = $contextlist->get_user()->id;
             $logs   = $DB->get_records('local_aynurasurveys_log', ['userid' => $userid]);
-            if (!$logs) continue;
+            if (!$logs) {
+                continue;
+            }
 
-            $data = array_values(array_map(function($log) {
+            $data = array_values(array_map(function ($log) {
                 return [
                     'surveyid' => $log->surveyid,
                     'trigger' => $log->trigger,
@@ -128,7 +130,7 @@ class provider implements
     }
 
     // -----------------------------------------------------------------------
-    // Deletion
+    // Deletion.
     // -----------------------------------------------------------------------
 
     /**
@@ -163,7 +165,9 @@ class provider implements
             return;
         }
         $userids = $userlist->get_userids();
-        if (empty($userids)) return;
+        if (empty($userids)) {
+            return;
+        }
 
         [$insql, $params] = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
         $DB->delete_records_select('local_aynurasurveys_log', "userid {$insql}", $params);

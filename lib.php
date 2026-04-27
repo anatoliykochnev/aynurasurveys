@@ -59,7 +59,7 @@ function local_aynurasurveys_after_require_login() {
     }
 
     // ----------------------------------------------------------------
-    // Step 1: Fire login-based triggers once per session
+    // Step 1: Fire login-based triggers once per session.
     // We use a session flag to ensure this only runs once per login,.
     // Not on every page load. This runs outside any DB transaction.
     // So dispatch() works correctly.
@@ -77,7 +77,7 @@ function local_aynurasurveys_after_require_login() {
             if ($user) {
                 $now = time();
 
-                // First_login: firstaccess set within last 60 seconds
+                // First_login: firstaccess set within last 60 seconds.
                 if ($user->firstaccess && ($now - $user->firstaccess) < 60) {
                     \local_aynurasurveys\trigger_manager::fire(
                         \local_aynurasurveys\trigger_manager::TRIGGER_FIRST_LOGIN,
@@ -124,11 +124,11 @@ function local_aynurasurveys_after_require_login() {
     }
 
     // ----------------------------------------------------------------
-    // Step 2: Show pending survey modal
+    // Step 2: Show pending survey modal.
     // ----------------------------------------------------------------
     $now = time();
 
-    // Determine current course context
+    // Determine current course context.
     // Guard against $PAGE->context not being set yet (fires early on some pages).
     $currentcourseid = null;
     try {
