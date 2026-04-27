@@ -1,0 +1,65 @@
+##
+# Aynura.Surveys — Release Workflow
+#
+# Triggered when a version tag (v*) is pushed.
+# Builds a clean zip and attaches it to the GitHub Release.
+##
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Build plugin zip
+        run: |
+          # Create clean build directory
+          mkdir -p /tmp/build
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='*.zip' \
+            --exclude='.DS_Store' \
+            --exclude='Thumbs.db' \
+            . /tmp/build/local_aynurasurveys/
+
+          cd /tmp/build
+          zip -r local_aynurasurveys-${{ steps.version.outputs.VERSION }}.zip \
+            local_aynurasurveys/
+
+          ls -lh local_aynurasurveys-${{ steps.version.outputs.VERSION }}.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Aynura.Surveys v${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Aynura.Surveys v${{ steps.version.outputs.VERSION }}
+
+            See [CHANGES.md](CHANGES.md) for full changelog.
+
+            ### Installation
+            1. Download `local_aynurasurveys-${{ steps.version.outputs.VERSION }}.zip`
+            2. Upload via **Site Administration → Plugins → Install plugins**
+            3. Follow the upgrade screen
+            4. Configure API key in **Aynura.Surveys → Settings**
+          files: /tmp/build/local_aynurasurveys-${{ steps.version.outputs.VERSION }}.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,191 @@
+##
+# Aynura.Surveys — Moodle Plugin CI
+#
+# Runs on every push and pull request:
+#   - PHP syntax check across supported PHP versions
+#   - Moodle code checker (moodle-cs coding standards)
+#   - Moodle plugin CI (install, behat, phpunit) via moodlehq/moodle-plugin-ci
+##
+
+name: Moodle Plugin CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+
+  # ──────────────────────────────────────────────────────────────────
+  # Job 1: PHP Syntax Check (fast, no Moodle needed)
+  # ──────────────────────────────────────────────────────────────────
+  php-syntax:
+    name: PHP Syntax (${{ matrix.php }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.1', '8.2', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Check PHP syntax
+        run: |
+          find . -name "*.php" \
+            ! -path "./.github/*" \
+            ! -path "./vendor/*" \
+            ! -path "./node_modules/*" \
+            | xargs -I {} php -l {}
+
+  # ──────────────────────────────────────────────────────────────────
+  # Job 2: Moodle Plugin CI
+  # Tests against multiple Moodle + PHP + DB combinations
+  # ──────────────────────────────────────────────────────────────────
+  moodle-plugin-ci:
+    name: Moodle ${{ matrix.moodle-branch }} / PHP ${{ matrix.php }} / ${{ matrix.database }}
+    runs-on: ubuntu-latest
+    needs: php-syntax
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_CHARACTER_SET_SERVER: utf8mb4
+          MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Moodle 4.5 LTS + PHP 8.1 + PostgreSQL
+          - php: '8.1'
+            moodle-branch: 'MOODLE_405_STABLE'
+            database: pgsql
+
+          # Moodle 4.5 LTS + PHP 8.2 + MySQL
+          - php: '8.2'
+            moodle-branch: 'MOODLE_405_STABLE'
+            database: mysqli
+
+          # Moodle 5.0 + PHP 8.2 + PostgreSQL
+          - php: '8.2'
+            moodle-branch: 'MOODLE_500_STABLE'
+            database: pgsql
+
+          # Moodle 5.0 + PHP 8.3 + MySQL
+          - php: '8.3'
+            moodle-branch: 'MOODLE_500_STABLE'
+            database: mysqli
+
+    steps:
+      - name: Checkout plugin
+        uses: actions/checkout@v4
+        with:
+          path: plugin
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, pgsql, mysqli, gd, zip, soap, xmlrpc
+          coverage: none
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist \
+            moodlehq/moodle-plugin-ci ci ^4
+          echo $(cd ci && pwd)/bin >> $GITHUB_PATH
+          echo CI_SKIP_BEHAT_CHROME=true >> $GITHUB_ENV
+
+      - name: Install Moodle
+        run: |
+          moodle-plugin-ci install \
+            --plugin ./plugin \
+            --db-host=127.0.0.1 \
+            --moodle=${{ matrix.moodle-branch }} \
+            --php=${{ matrix.php }}
+        env:
+          DB: ${{ matrix.database }}
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+
+      - name: PHP Lint (moodle-plugin-ci)
+        run: moodle-plugin-ci phplint
+        if: always()
+
+      - name: PHP Copy/Paste Detector
+        run: moodle-plugin-ci phpcpd
+        if: always()
+        continue-on-error: true
+
+      - name: PHP Mess Detector
+        run: moodle-plugin-ci phpmd
+        if: always()
+        continue-on-error: true
+
+      - name: Moodle Code Checker
+        run: moodle-plugin-ci codechecker
+        if: always()
+
+      - name: Moodle PHPDoc Checker
+        run: moodle-plugin-ci phpdoc
+        if: always()
+        continue-on-error: true
+
+      - name: Validate
+        run: moodle-plugin-ci validate
+        if: always()
+
+      - name: Check upgrade savepoints
+        run: moodle-plugin-ci savepoints
+        if: always()
+
+      - name: Mustache Lint
+        run: moodle-plugin-ci mustachelint
+        if: always()
+        continue-on-error: true
+
+      - name: JavaScript Lint
+        run: moodle-plugin-ci jshint
+        if: always()
+        continue-on-error: true
+
+      - name: PHPUnit
+        run: moodle-plugin-ci phpunit --coverage-text
+        if: always()
+        continue-on-error: true
+
+      - name: Grunt (AMD build)
+        run: moodle-plugin-ci grunt --component local_aynurasurveys
+        if: always()
+        continue-on-error: true

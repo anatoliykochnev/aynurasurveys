@@ -306,5 +306,8 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
     if ($oldversion < 2026042416) {
         upgrade_plugin_savepoint(true, 2026042416, 'local', 'aynurasurveys');
     }
+    if ($oldversion < 2026042417) {
+        upgrade_plugin_savepoint(true, 2026042417, 'local', 'aynurasurveys');
+    }
     return true;
 }

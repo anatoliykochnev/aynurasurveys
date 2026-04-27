@@ -1,0 +1,35 @@
+# Moodle plugin — .gitignore
+# CI
+ci/
+.moodle/
+
+# Node / Grunt build tools
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Grunt output (keep amd/build committed for Moodle — remove if using CI build)
+# amd/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# PHP
+*.log
+/vendor/
+
+# Composer
+composer.lock
+
+# Test artifacts
+/coverage/
+/.phpunit.result.cache
