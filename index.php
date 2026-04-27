@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Overview dashboard for local_aynurasurveys.
@@ -21,14 +21,6 @@
  * @copyright  2026 Aynura.Surveys
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-//
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Overview dashboard for local_aynurasurveys.
@@ -55,9 +47,9 @@ use local_aynurasurveys\trigger_manager;
 admin_externalpage_setup('local_aynurasurveys_overview');
 $PAGE->set_url(new moodle_url('/local/aynurasurveys/index.php'));
 
-// ------------------------------------------------------------------.
-// Gather stats.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Gather stats
+// ------------------------------------------------------------------
 $activerules   = $DB->count_records('local_aynurasurveys_rules', ['enabled' => 1]);
 $archivedrules = $DB->count_records('local_aynurasurveys_rules', ['enabled' => 0]);
 $totaldispatch = $DB->count_records_select('local_aynurasurveys_log', "status != 'info' AND response != 'pending_modal_created'");
@@ -68,7 +60,7 @@ $completed      = $DB->count_records('local_aynurasurveys_pending', ['status' =>
 
 $successrate = $totaldispatch > 0 ? round(($successcount / $totaldispatch) * 100) : 0;
 
-// Last dispatch time.
+// Last dispatch time
 $lastlog = $DB->get_record_select(
     'local_aynurasurveys_log',
     "status = 'success'",
@@ -102,9 +94,9 @@ try {
     $connmsg = 'Not configured';
 }
 
-// ------------------------------------------------------------------.
-// Render.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Render
+// ------------------------------------------------------------------
 echo $OUTPUT->header();
 
 $currentpage = 'overview';

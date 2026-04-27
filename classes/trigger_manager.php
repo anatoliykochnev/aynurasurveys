@@ -1,18 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Trigger manager for local_aynurasurveys.
@@ -23,7 +23,6 @@
  */
 
 namespace local_aynurasurveys;
-
 
 /**
  * Manages survey trigger evaluation, frequency protection, and dispatch.
@@ -125,12 +124,12 @@ class trigger_manager {
         ];
     }
 
-    // -----------------------------------------------------------------------.
-    // Main dispatch entry point.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Main dispatch entry point
+    // -----------------------------------------------------------------------
 
     /**
-     * Fire.
+     * Fire
      */
     public static function fire(
         string $trigger,
@@ -180,12 +179,12 @@ class trigger_manager {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Validity period check.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Validity period check
+    // -----------------------------------------------------------------------
 
     /**
-     * Is rule valid.
+     * Is rule valid
      */
     public static function is_rule_valid(\stdClass $rule, ?int $today = null): bool {
         $today = $today ?? mktime(0, 0, 0);
@@ -204,12 +203,12 @@ class trigger_manager {
         return true;
     }
 
-    // -----------------------------------------------------------------------.
-    // Scope check.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Scope check
+    // -----------------------------------------------------------------------
 
     /**
-     * Rule matches course.
+     * Rule matches course
      */
     private static function rule_matches_course(\stdClass $rule, ?int $courseid): bool {
         global $DB;
@@ -228,12 +227,12 @@ class trigger_manager {
         ]);
     }
 
-    // -----------------------------------------------------------------------.
-    // Frequency protection.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Frequency protection
+    // -----------------------------------------------------------------------
 
     /**
-     * Returns true if a trigger is repeating (dismiss = delete, not permanently block).
+     * Returns true if a trigger is repeating (dismiss = delete, not permanently block)
      * Repeating triggers re-queue the survey on the next event occurrence.
      */
     public static function is_repeating(string $trigger): bool {
@@ -296,12 +295,12 @@ class trigger_manager {
         return false;
     }
 
-    // -----------------------------------------------------------------------.
-    // Dispatch — writes pending modal record.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Dispatch — writes pending modal record
+    // -----------------------------------------------------------------------
 
     /**
-     * Dispatch.
+     * Dispatch
      */
     private static function dispatch(
         \stdClass $rule,
@@ -361,12 +360,12 @@ class trigger_manager {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Delivery log.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Delivery log
+    // -----------------------------------------------------------------------
 
     /**
-     * Write log.
+     * Write log
      */
     private static function write_log(
         \stdClass $rule,
@@ -389,12 +388,12 @@ class trigger_manager {
         ]);
     }
 
-    // -----------------------------------------------------------------------.
-    // Helpers.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Helpers
+    // -----------------------------------------------------------------------
 
     /**
-     * Get conditions.
+     * Get conditions
      */
     public static function get_conditions(\stdClass $rule): array {
         if (empty($rule->conditions)) {

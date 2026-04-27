@@ -1,18 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Event observer for local_aynurasurveys.
@@ -28,7 +28,6 @@
 
 namespace local_aynurasurveys;
 
-
 /**
  * Event observer callbacks for local_aynurasurveys.
  *
@@ -37,9 +36,9 @@ namespace local_aynurasurveys;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class observer {
-    // -----------------------------------------------------------------------.
-    // User-Based Triggers.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // User-Based Triggers
+    // -----------------------------------------------------------------------
 
     /**
      * Handles \core\event\user_loggedin
@@ -64,9 +63,9 @@ class observer {
         // Handled in lib.php after_require_login hook — see comment above.
     }
 
-    // -----------------------------------------------------------------------.
-    // Enrollment-Based Triggers.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Enrollment-Based Triggers
+    // -----------------------------------------------------------------------
 
     /**
      * Handles \core\event\user_enrolment_deleted
@@ -96,9 +95,9 @@ class observer {
         );
     }
 
-    // -----------------------------------------------------------------------.
-    // Course Progress Triggers.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Course Progress Triggers
+    // -----------------------------------------------------------------------
 
     /**
      * Handles \core\event\course_module_viewed
@@ -107,7 +106,7 @@ class observer {
      *
      * We use the delivery log to detect "first access" — if no prior dispatch
      * attempt (success or fail) exists for this user + course_started trigger
-     * in this course, it qualifies as the first activity access.
+     * in this course, it qualifies as the first activity access
      */
     public static function course_module_viewed(\core\event\course_module_viewed $event): void {
         global $DB;
@@ -175,14 +174,14 @@ class observer {
         );
     }
 
-    // -----------------------------------------------------------------------.
-    // Grade-Based Triggers.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Grade-Based Triggers
+    // -----------------------------------------------------------------------
 
     /**
      * Handles \core\event\user_graded
      *
-     * Evaluates both grade_passed and grade_failed triggers.
+     * Evaluates both grade_passed and grade_failed triggers
      * Each rule's conditions carry { "threshold": N } where N is a percentage (0–100).
      */
     public static function user_graded(\core\event\user_graded $event): void {
@@ -217,8 +216,8 @@ class observer {
             'item_name' => $gradeitem->itemname ?? '',
         ];
 
-        // --- grade_passed ---.
-        // Load rules, check each threshold.
+        // --- grade_passed ---
+        // Load rules, check each threshold
         $passedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_GRADE_PASSED,
             'enabled' => 1,
@@ -238,7 +237,7 @@ class observer {
             }
         }
 
-        // --- grade_failed ---.
+        // --- grade_failed ---
         $failedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_GRADE_FAILED,
             'enabled' => 1,
@@ -259,15 +258,15 @@ class observer {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Activity Completion Trigger.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Activity Completion Trigger
+    // -----------------------------------------------------------------------
 
     /**
      * Handles \core\event\course_module_completion_updated
      *
      * Trigger: activity_completed
-     * Fires when an activity's completion status is updated to complete.
+     * Fires when an activity's completion status is updated to complete
      * Checks rule condition { "cmid": N } to match specific activity,
      * or fires for any activity if global scope with no cmid set.
      */
@@ -339,14 +338,14 @@ class observer {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Quiz Triggers.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Quiz Triggers
+    // -----------------------------------------------------------------------
 
     /**
      * Handles \mod_quiz\event\attempt_submitted
      *
-     * Evaluates quiz_passed and quiz_failed triggers.
+     * Evaluates quiz_passed and quiz_failed triggers
      * Grade threshold comes from each rule's conditions: { "threshold": N }
      * where N is a percentage (0-100).
      */

@@ -1,18 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Aynura.Surveys API client.
@@ -28,7 +28,6 @@
 namespace local_aynurasurveys;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 global $CFG;
 require_once($CFG->libdir . '/filelib.php');
@@ -61,12 +60,12 @@ class api {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Public API methods.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Public API methods
+    // -----------------------------------------------------------------------
 
     /**
-     * Test connectivity via GET /ping.
+     * Test connectivity via GET /ping
      *
      * @return array ['success' => bool, 'message' => string]
      */
@@ -182,12 +181,12 @@ class api {
         ];
     }
 
-    // -----------------------------------------------------------------------.
-    // Private HTTP helpers.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Private HTTP helpers
+    // -----------------------------------------------------------------------
 
     /**
-     * Make an authenticated GET request.
+     * Make an authenticated GET request
      *
      * @param  string $path    API path (e.g. '/surveys').
      * @param  array  $params  Query string parameters.

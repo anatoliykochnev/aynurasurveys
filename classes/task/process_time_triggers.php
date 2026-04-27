@@ -1,18 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Scheduled task: process all time-based and percentage-based trigger rules.
@@ -32,7 +32,6 @@
  */
 
 namespace local_aynurasurveys\task;
-
 
 use local_aynurasurveys\trigger_manager;
 
@@ -107,12 +106,12 @@ class process_time_triggers extends \core\task\scheduled_task {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Rule dispatcher.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Rule dispatcher
+    // -----------------------------------------------------------------------
 
     /**
-     * Process rule.
+     * Process rule
      */
     private function process_rule(\stdClass $rule, int $now): void {
         switch ($rule->trigger) {
@@ -150,12 +149,12 @@ class process_time_triggers extends \core\task\scheduled_task {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Individual trigger processors.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Individual trigger processors
+    // -----------------------------------------------------------------------
 
     /**
-     * days_after_enrollment — fire N days after a user was enrolled.
+     * days_after_enrollment — fire N days after a user was enrolled
      * Condition: { "days": N }
      */
     private function process_days_after_enrollment(\stdClass $rule, int $now): void {
@@ -511,12 +510,12 @@ class process_time_triggers extends \core\task\scheduled_task {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Shared helpers.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Shared helpers
+    // -----------------------------------------------------------------------
 
     /**
-     * Fire a trigger for all users enrolled in the rule's target courses.
+     * Fire a trigger for all users enrolled in the rule's target courses
      * Used by fixed_date and recurring triggers.
      *
      * @param \stdClass   $rule

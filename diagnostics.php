@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * API diagnostics page for local_aynurasurveys.
@@ -21,14 +21,6 @@
  * @copyright  2026 Aynura.Surveys
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-//
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * API diagnostics page for local_aynurasurveys.
@@ -79,11 +71,11 @@ if (empty($baseurl) || empty($apikey)) {
 echo html_writer::tag('p', 'Base URL: ' . html_writer::tag('code', s($baseurl)));
 echo html_writer::tag('p', 'API Key: ' . html_writer::tag('code', substr($apikey, 0, 6) . str_repeat('*', max(0, strlen($apikey) - 6))));
 
-// ------------------------------------------------------------------.
-// Helper: run a test and display results.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Helper: run a test and display results
+// ------------------------------------------------------------------
 /**
- * Run a connectivity test and return formatted result HTML.
+ * Run a connectivity test and return formatted result HTML
  *
  * @param string \$label Test label.
  * @param bool \$success Whether the test passed.
@@ -171,9 +163,9 @@ function run_test(string $label, string $url, string $apikey): void {
     echo html_writer::end_tag('div'); // card
 }
 
-// ------------------------------------------------------------------.
-// Run tests.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Run tests
+// ------------------------------------------------------------------
 
 echo html_writer::tag('h4', '1. Ping', ['class' => 'mt-4']);
 run_test('GET /ping', $baseurl . '/ping', $apikey);
@@ -187,9 +179,9 @@ run_test('GET /surveys?status=active', $baseurl . '/surveys?status=active', $api
 echo html_writer::tag('h4', '4. Surveys — no filter', ['class' => 'mt-4']);
 run_test('GET /surveys (no params)', $baseurl . '/surveys', $apikey);
 
-// ------------------------------------------------------------------.
-// Back link.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Back link
+// ------------------------------------------------------------------
 echo '</div>'; // hs-card
 echo '</div></div>'; // hs-content + hs-wrap
 echo $OUTPUT->footer();

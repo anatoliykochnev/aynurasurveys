@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Trigger rule management for local_aynurasurveys.
@@ -21,14 +21,6 @@
  * @copyright  2026 Aynura.Surveys
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-//
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Trigger rule management for local_aynurasurveys.
@@ -61,9 +53,9 @@ $tab     = optional_param('tab', 'active', PARAM_ALPHA);
 $pageurl = new moodle_url('/local/aynurasurveys/rules.php');
 $PAGE->set_url(new moodle_url($pageurl, ['action' => $action, 'id' => $ruleid, 'tab' => $tab]));
 
-// ------------------------------------------------------------------.
-// Actions: archive, reactivate.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Actions: archive, reactivate
+// ------------------------------------------------------------------
 if ($action === 'archive' && $ruleid) {
     require_sesskey();
     $DB->set_field('local_aynurasurveys_rules', 'enabled', 0, ['id' => $ruleid]);
@@ -80,9 +72,9 @@ if ($action === 'reactivate' && $ruleid) {
         \core\output\notification::NOTIFY_SUCCESS);
 }
 
-// ------------------------------------------------------------------.
-// Handle form POST (add / edit).
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Handle form POST (add / edit)
+// ------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($action, ['add', 'edit'])) {
     require_sesskey();
 
@@ -202,15 +194,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($action, ['add', 'edit']))
         \core\output\notification::NOTIFY_SUCCESS);
 }
 
-// ------------------------------------------------------------------.
-// Prepare form data (for add / edit rendering).
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Prepare form data (for add / edit rendering)
+// ------------------------------------------------------------------
 $rule                = null;
 $existingcourseids  = [];
 $existingconditions = [];
 
 if ($action === 'add') {
-    // Empty defaults — rule stays null.
+    // Empty defaults — rule stays null
 } else if ($action === 'edit' && $ruleid) {
     $rule                = $DB->get_record('local_aynurasurveys_rules', ['id' => $ruleid], '*', MUST_EXIST);
     $existingcourseids  = $DB->get_fieldset_select('local_aynurasurveys_rule_courses', 'courseid', 'ruleid = ?', [$ruleid]);
@@ -250,9 +242,9 @@ $formaction  = new moodle_url($pageurl, [
     'sesskey' => sesskey(),
 ]);
 
-// ------------------------------------------------------------------.
-// Load rules for table.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Load rules for table
+// ------------------------------------------------------------------
 $today = mktime(0, 0, 0);
 if ($tab === 'active') {
     $rules = $DB->get_records('local_aynurasurveys_rules', ['enabled' => 1], 'timecreated DESC');
@@ -260,9 +252,9 @@ if ($tab === 'active') {
     $rules = $DB->get_records('local_aynurasurveys_rules', ['enabled' => 0], 'timecreated DESC');
 }
 
-// ------------------------------------------------------------------.
-// Render.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Render
+// ------------------------------------------------------------------
 echo $OUTPUT->header();
 
 $currentpage = 'rules';

@@ -1,18 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Data collector for local_aynurasurveys.
@@ -31,7 +31,6 @@
 namespace local_aynurasurveys;
 
 defined('MOODLE_INTERNAL') || die();
-
 
 global $CFG;
 require_once($CFG->dirroot . '/user/profile/lib.php');
@@ -71,12 +70,12 @@ class data_collector {
         });
     }
 
-    // -----------------------------------------------------------------------.
-    // Profile fields.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Profile fields
+    // -----------------------------------------------------------------------
 
     /**
-     * Get all custom user profile field values.
+     * Get all custom user profile field values
      * Returns key-value pairs where key = field shortname, value = field value.
      * Empty/null/unset fields are omitted.
      *
@@ -88,7 +87,7 @@ class data_collector {
 
         $profile = [];
 
-        // --- Standard Moodle user fields ---.
+        // --- Standard Moodle user fields ---
         $standardfields = [
             'username' => 'username',
             'city' => 'city',
@@ -111,7 +110,7 @@ class data_collector {
             }
         }
 
-        // --- Custom user profile fields ---.
+        // --- Custom user profile fields ---
         try {
             profile_load_data($user);
         } catch (\Exception $e) {
@@ -142,12 +141,12 @@ class data_collector {
         return $profile;
     }
 
-    // -----------------------------------------------------------------------.
-    // Course data.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Course data
+    // -----------------------------------------------------------------------
 
     /**
-     * Get course metadata including standard fields and custom course fields.
+     * Get course metadata including standard fields and custom course fields
      *
      * @param  int $courseid
      * @return array
@@ -211,12 +210,12 @@ class data_collector {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Cohorts.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Cohorts
+    // -----------------------------------------------------------------------
 
     /**
-     * Get all cohort names the user belongs to.
+     * Get all cohort names the user belongs to
      *
      * @param  int $userid
      * @return array Array of cohort name strings.
@@ -237,12 +236,12 @@ class data_collector {
         }
     }
 
-    // -----------------------------------------------------------------------.
-    // Moodle context.
-    // -----------------------------------------------------------------------.
+    // -----------------------------------------------------------------------
+    // Moodle context
+    // -----------------------------------------------------------------------
 
     /**
-     * Build the moodle context block.
+     * Build the moodle context block
      *
      * @param  array $context  Context data from trigger (trigger, activity_name, etc.)
      * @return array

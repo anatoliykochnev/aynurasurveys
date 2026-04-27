@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * AJAX conflict and completion check handler.
@@ -21,14 +21,6 @@
  * @copyright  2026 Aynura.Surveys
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-//
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * AJAX conflict and completion check handler.
@@ -65,16 +57,16 @@ global $DB;
 
 $action = required_param('action', PARAM_ALPHANUMEXT);
 
-// ------------------------------------------------------------------.
-// Action: conflict_check.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Action: conflict_check
+// ------------------------------------------------------------------
 if ($action === 'conflict_check') {
     $trigger    = required_param('trigger', PARAM_ALPHANUMEXT);
     $excludeid  = optional_param('exclude_rule_id', 0, PARAM_INT);
 
     $today = mktime(0, 0, 0);
 
-    // Find other enabled, site-context, not-yet-expired rules for same trigger.
+    // Find other enabled, site-context, not-yet-expired rules for same trigger
     $sql = "SELECT r.id, r.surveyname, r.surveyid, r.trigger, r.valid_from, r.valid_until
               FROM {local_aynurasurveys_rules} r
              WHERE r.trigger = :trigger
@@ -108,9 +100,9 @@ if ($action === 'conflict_check') {
     exit;
 }
 
-// ------------------------------------------------------------------.
-// Action: completion_check.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
+// Action: completion_check
+// ------------------------------------------------------------------
 if ($action === 'completion_check') {
     $courseidsraw = required_param('courseids', PARAM_RAW);
     $courseids     = array_filter(array_map('intval', explode(',', $courseidsraw)));
@@ -136,10 +128,10 @@ if ($action === 'completion_check') {
     exit;
 }
 
-// ------------------------------------------------------------------.
-// Action: get_activities — returns activities with completion enabled.
+// ------------------------------------------------------------------
+// Action: get_activities — returns activities with completion enabled
 // for given course IDs, grouped by course.
-// ------------------------------------------------------------------.
+// ------------------------------------------------------------------
 if ($action === 'get_activities') {
     $courseidsraw = required_param('courseids', PARAM_RAW);
     $courseids     = array_filter(array_map('intval', explode(',', $courseidsraw)));
@@ -154,7 +146,7 @@ if ($action === 'get_activities') {
         $course = $DB->get_record('course', ['id' => $cid], 'id, fullname, shortname');
         if (!$course) continue;
 
-        // Get all course modules with completion enabled.
+        // Get all course modules with completion enabled
         $sql = "SELECT cm.id AS cmid, m.name AS modname, cm.instance, c.fullname AS coursename
                   FROM {course_modules} cm
                   JOIN {modules} m ON m.id = cm.module

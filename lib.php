@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify.
-// It under the terms of the GNU General Public License as published by.
-// The Free Software Foundation, either version 3 of the License, or.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Plugin hook callbacks for local_aynurasurveys.
@@ -21,14 +21,6 @@
  * @copyright  2026 Aynura.Surveys
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-//
-// Moodle is distributed in the hope that it will be useful,.
-// But WITHOUT ANY WARRANTY; without even the implied warranty of.
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License.
-// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Plugin hook callbacks for local_aynurasurveys.
@@ -45,7 +37,6 @@
  * @copyright  2026 Aynura.Surveys
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 
 /**
  * Hook: called after every page requires login.
@@ -67,12 +58,12 @@ function local_aynurasurveys_after_require_login() {
         return;
     }
 
-    // ----------------------------------------------------------------.
-    // Step 1: Fire login-based triggers once per session.
+    // ----------------------------------------------------------------
+    // Step 1: Fire login-based triggers once per session
     // We use a session flag to ensure this only runs once per login,.
     // Not on every page load. This runs outside any DB transaction.
     // So dispatch() works correctly.
-    // ----------------------------------------------------------------.
+    // ----------------------------------------------------------------
     if (empty($SESSION->aynurasurveys_login_triggered)) {
         $SESSION->aynurasurveys_login_triggered = true;
 
@@ -86,7 +77,7 @@ function local_aynurasurveys_after_require_login() {
             if ($user) {
                 $now = time();
 
-                // First_login: firstaccess set within last 60 seconds.
+                // First_login: firstaccess set within last 60 seconds
                 if ($user->firstaccess && ($now - $user->firstaccess) < 60) {
                     \local_aynurasurveys\trigger_manager::fire(
                         \local_aynurasurveys\trigger_manager::TRIGGER_FIRST_LOGIN,
@@ -132,12 +123,12 @@ function local_aynurasurveys_after_require_login() {
         }
     }
 
-    // ----------------------------------------------------------------.
-    // Step 2: Show pending survey modal.
-    // ----------------------------------------------------------------.
+    // ----------------------------------------------------------------
+    // Step 2: Show pending survey modal
+    // ----------------------------------------------------------------
     $now = time();
 
-    // Determine current course context.
+    // Determine current course context
     // Guard against $PAGE->context not being set yet (fires early on some pages).
     $currentcourseid = null;
     try {
