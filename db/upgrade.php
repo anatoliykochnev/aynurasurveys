@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Upgrade steps for local_aynurasurveys.
@@ -22,13 +22,13 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Upgrade steps for local_aynurasurveys.
@@ -73,7 +73,7 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
         $table->add_field('timeresolved', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
 
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
-        $table->add_key('fk_user', XMLDB_KEY_FOREIGN, ['userid'], 'user',                   ['id']);
+        $table->add_key('fk_user', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
         $table->add_key('fk_rule', XMLDB_KEY_FOREIGN, ['ruleid'], 'local_aynurasurveys_rules', ['id']);
         $table->add_index('idx_status', XMLDB_INDEX_NOTUNIQUE, ['status']);
         $table->add_index('idx_user_pending', XMLDB_INDEX_NOTUNIQUE, ['userid', 'status']);
@@ -85,7 +85,7 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026041100) {
-        // local_aynurasurveys_rules: add valid_from, valid_until, display_context.
+        // Local_aynurasurveys_rules: add valid_from, valid_until, display_context.
         $rulestable = new xmldb_table('local_aynurasurveys_rules');
 
         $f = new xmldb_field('display_context', XMLDB_TYPE_CHAR, '16', null, XMLDB_NOTNULL, null, 'site', 'scope');
@@ -103,7 +103,7 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
             $dbman->add_field($rulestable, $f);
         }
 
-        // local_aynurasurveys_log: replace idx_user_survey with idx_user_survey_course.
+        // Local_aynurasurveys_log: replace idx_user_survey with idx_user_survey_course.
         $logtable = new xmldb_table('local_aynurasurveys_log');
         $oldidx = new xmldb_index('idx_user_survey', XMLDB_INDEX_NOTUNIQUE, ['userid', 'surveyid']);
         if ($dbman->index_exists($logtable, $oldidx)) {
@@ -114,7 +114,7 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
             $dbman->add_index($logtable, $newidx);
         }
 
-        // local_aynurasurveys_pending: add display_context.
+        // Local_aynurasurveys_pending: add display_context.
         $pendingtable = new xmldb_table('local_aynurasurveys_pending');
         $f = new xmldb_field('display_context', XMLDB_TYPE_CHAR, '16', null, XMLDB_NOTNULL, null, 'site', 'courseid');
         if (!$dbman->field_exists($pendingtable, $f)) {
@@ -131,14 +131,14 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
 
     // 2026041300 — add delay_minutes to rules, show_after to pending.
     if ($oldversion < 2026041300) {
-        // local_aynurasurveys_rules: add delay_minutes.
+        // Local_aynurasurveys_rules: add delay_minutes.
         $rulestable = new xmldb_table('local_aynurasurveys_rules');
         $f = new xmldb_field('delay_minutes', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'valid_until');
         if (!$dbman->field_exists($rulestable, $f)) {
             $dbman->add_field($rulestable, $f);
         }
 
-        // local_aynurasurveys_pending: add show_after.
+        // Local_aynurasurveys_pending: add show_after.
         $pendingtable = new xmldb_table('local_aynurasurveys_pending');
         $f = new xmldb_field('show_after', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'language');
         if (!$dbman->field_exists($pendingtable, $f)) {
@@ -264,10 +264,10 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2026041336, 'local', 'aynurasurveys');
     }
     if ($oldversion < 2026041337) {
-        // Rename: local_hubsurveys -> local_aynurasurveys
+        // Rename: local_hubsurveys -> local_aynurasurveys.
         // DB tables are created fresh on new install via install.xml.
-        // For existing installs upgrading from local_hubsurveys, tables
-        // are renamed in this step.
+        // For existing installs upgrading from local_hubsurveys, tables.
+        // Are renamed in this step.
         $tables = [
             'local_hubsurveys_rules' => 'local_aynurasurveys_rules',
             'local_hubsurveys_rule_courses' => 'local_aynurasurveys_rule_courses',
@@ -353,6 +353,12 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
     }
     if ($oldversion < 2026042424) {
         upgrade_plugin_savepoint(true, 2026042424, 'local', 'aynurasurveys');
+    }
+    if ($oldversion < 2026042425) {
+        upgrade_plugin_savepoint(true, 2026042425, 'local', 'aynurasurveys');
+    }
+    if ($oldversion < 2026042426) {
+        upgrade_plugin_savepoint(true, 2026042426, 'local', 'aynurasurveys');
     }
     return true;
 }

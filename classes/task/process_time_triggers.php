@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/.
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify.
 // It under the terms of the GNU General Public License as published by.
@@ -107,9 +107,9 @@ class process_time_triggers extends \core\task\scheduled_task {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Rule dispatcher.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Process rule.
@@ -150,9 +150,9 @@ class process_time_triggers extends \core\task\scheduled_task {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Individual trigger processors.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * days_after_enrollment — fire N days after a user was enrolled.
@@ -306,8 +306,8 @@ class process_time_triggers extends \core\task\scheduled_task {
         $conditions  = trigger_manager::get_conditions($rule);
         $recurrence  = $conditions['recurrence'] ?? '';
 
-        $shouldfire = match($recurrence) {
-            'daily' => true,  // Task runs hourly — fire once per day using the log.
+        $shouldfire = match ($recurrence) {
+            'daily' => true, // Task runs hourly — fire once per day using the log.
             'weekly' => (date('N', $now) === '1'), // Monday.
             'monthly' => (date('j', $now) === '1'), // 1st of month.
             default => false,
@@ -511,9 +511,9 @@ class process_time_triggers extends \core\task\scheduled_task {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Shared helpers.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Fire a trigger for all users enrolled in the rule's target courses.
@@ -529,8 +529,7 @@ class process_time_triggers extends \core\task\scheduled_task {
         \stdClass $rule,
         int $now,
         string $trigger,
-        array $extracontext = [],
-        ?string $recurrence = null
+        array $extracontext = [], ?string $recurrence = null
     ): void {
         global $DB;
 
@@ -553,7 +552,7 @@ class process_time_triggers extends \core\task\scheduled_task {
 
             // For recurring triggers, check within the current period instead of all-time.
             if ($recurrence) {
-                $periodstart = match($recurrence) {
+                $periodstart = match ($recurrence) {
                     'daily' => strtotime('today midnight'),
                     'weekly' => strtotime('last Monday midnight'),
                     'monthly' => strtotime('first day of this month midnight'),

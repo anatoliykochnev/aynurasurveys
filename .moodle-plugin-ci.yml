@@ -8,3 +8,7 @@ filter:
 
 # PHP Mess Detector ruleset.
 phpmd: phpmd.xml
+
+filter:
+  notPaths:
+    - templates/

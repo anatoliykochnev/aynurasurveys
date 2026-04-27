@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/.
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify.
 // It under the terms of the GNU General Public License as published by.
@@ -45,11 +45,11 @@ use core_privacy\local\request\writer;
  */
 class provider implements
     \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\plugin\provider,
-    \core_privacy\local\request\core_userlist_provider {
-    // -----------------------------------------------------------------------
+    \core_privacy\local\request\core_userlist_provider,
+    \core_privacy\local\request\plugin\provider {
+    // -----------------------------------------------------------------------.
     // Metadata.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Get metadata.
@@ -69,9 +69,9 @@ class provider implements
         return $collection;
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Context discovery.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Get contexts for userid.
@@ -94,9 +94,9 @@ class provider implements
         $userlist->add_from_sql('userid', $sql, []);
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Export.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Export user data.
@@ -128,9 +128,9 @@ class provider implements
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Deletion.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Delete data for all users in context.

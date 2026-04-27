@@ -134,7 +134,7 @@ $string['privacy:metadata:local_aynurasurveys_log:userid']     = 'The ID of the 
 $string['privacy:metadata:local_aynurasurveys_log:surveyid']   = 'The external Aynura.Surveys survey ID.';
 $string['privacy:metadata:local_aynurasurveys_log:trigger']    = 'The trigger type that fired the survey.';
 $string['privacy:metadata:local_aynurasurveys_log:status']     = 'Whether the dispatch succeeded or failed.';
-$string['privacy:metadata:local_aynurasurveys_log:timecreated']= 'The time the dispatch was attempted.';
+$string['privacy:metadata:local_aynurasurveys_log:timecreated'] = 'The time the dispatch was attempted.';
 
 // Errors.
 $string['error_nosurveys']           = 'No surveys could be loaded from Aynura.Surveys. Check your connection settings.';

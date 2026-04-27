@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/.
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify.
 // It under the terms of the GNU General Public License as published by.
@@ -37,9 +37,9 @@ namespace local_aynurasurveys;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class observer {
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // User-Based Triggers.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Handles \core\event\user_loggedin
@@ -64,9 +64,9 @@ class observer {
         // Handled in lib.php after_require_login hook — see comment above.
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Enrollment-Based Triggers.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Handles \core\event\user_enrolment_deleted
@@ -96,9 +96,9 @@ class observer {
         );
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Course Progress Triggers.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Handles \core\event\course_module_viewed
@@ -175,9 +175,9 @@ class observer {
         );
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Grade-Based Triggers.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Handles \core\event\user_graded
@@ -200,8 +200,7 @@ class observer {
         }
 
         $range      = (float) $gradeitem->grademax - (float) $gradeitem->grademin;
-        $percentage = $range > 0
-            ? (((float) $grade->finalgrade - (float) $gradeitem->grademin) / $range) * 100
+        $percentage = $range > 0 ? (((float) $grade->finalgrade - (float) $gradeitem->grademin) / $range) * 100
             : 0;
 
         $user   = $DB->get_record('user', ['id' => $userid], 'id, email, firstname, lastname');
@@ -218,7 +217,7 @@ class observer {
             'item_name' => $gradeitem->itemname ?? '',
         ];
 
-        // --- grade_passed ---
+        // --- grade_passed ---.
         // Load rules, check each threshold.
         $passedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_GRADE_PASSED,
@@ -239,7 +238,7 @@ class observer {
             }
         }
 
-        // --- grade_failed ---
+        // --- grade_failed ---.
         $failedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_GRADE_FAILED,
             'enabled' => 1,
@@ -260,9 +259,9 @@ class observer {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Activity Completion Trigger.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Handles \core\event\course_module_completion_updated
@@ -340,9 +339,9 @@ class observer {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Quiz Triggers.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Handles \mod_quiz\event\attempt_submitted

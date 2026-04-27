@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/.
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify.
 // It under the terms of the GNU General Public License as published by.
@@ -35,24 +35,43 @@ namespace local_aynurasurveys;
 class trigger_manager {
     // Trigger type constants.
     /** @var string Trigger type: first login. */
+    /** @var string Trigger type constant. */
     const TRIGGER_FIRST_LOGIN            = 'first_login';
+    /** @var string Trigger type constant. */
     const TRIGGER_EVERY_LOGIN            = 'every_login';
+    /** @var string Trigger type constant. */
     const TRIGGER_LOGIN_AFTER_INACTIVITY = 'login_after_inactivity';
+    /** @var string Trigger type constant. */
     const TRIGGER_DAYS_AFTER_ENROLLMENT  = 'days_after_enrollment';
+    /** @var string Trigger type constant. */
     const TRIGGER_UNENROLLED             = 'unenrolled';
+    /** @var string Trigger type constant. */
     const TRIGGER_COURSE_PERCENT         = 'course_percent';
+    /** @var string Trigger type constant. */
     const TRIGGER_COURSE_STARTED         = 'course_started';
+    /** @var string Trigger type constant. */
     const TRIGGER_COURSE_COMPLETED       = 'course_completed';
+    /** @var string Trigger type constant. */
     const TRIGGER_GRADE_PASSED           = 'grade_passed';
+    /** @var string Trigger type constant. */
     const TRIGGER_GRADE_FAILED           = 'grade_failed';
+    /** @var string Trigger type constant. */
     const TRIGGER_FIXED_DATE             = 'fixed_date';
+    /** @var string Trigger type constant. */
     const TRIGGER_RECURRING              = 'recurring';
+    /** @var string Trigger type constant. */
     const TRIGGER_DAYS_AFTER_START       = 'days_after_start';
+    /** @var string Trigger type constant. */
     const TRIGGER_DAYS_BEFORE_END        = 'days_before_end';
+    /** @var string Trigger type constant. */
     const TRIGGER_DAYS_AFTER_COMPLETION  = 'days_after_completion';
+    /** @var string Trigger type constant. */
     const TRIGGER_QUIZ_PASSED            = 'quiz_passed';
+    /** @var string Trigger type constant. */
     const TRIGGER_QUIZ_FAILED            = 'quiz_failed';
+    /** @var string Trigger type constant. */
     const TRIGGER_DAYS_AFTER_QUIZ        = 'days_after_quiz';
+    /** @var string Trigger type constant. */
     const TRIGGER_ACTIVITY_COMPLETED     = 'activity_completed';
 
     /** Login-only triggers — always site context, no course selector. */
@@ -106,17 +125,16 @@ class trigger_manager {
         ];
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Main dispatch entry point.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Fire.
      */
     public static function fire(
         string $trigger,
-        \stdClass $user,
-        ?int $courseid = null,
+        \stdClass $user, ?int $courseid = null,
         array $extra = []
     ): void {
         global $DB;
@@ -155,7 +173,6 @@ class trigger_manager {
 
                 $context = array_merge($extra, ['courseid' => $courseid]);
                 self::dispatch($rule, $user, $trigger, $courseid, $context);
-
             } catch (\Exception $e) {
                 // Log and continue — don't let one rule failure block others.
                 debugging('local_aynurasurveys: fire() error for rule ' . $rule->id . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
@@ -163,9 +180,9 @@ class trigger_manager {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Validity period check.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Is rule valid.
@@ -187,9 +204,9 @@ class trigger_manager {
         return true;
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Scope check.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Rule matches course.
@@ -211,9 +228,9 @@ class trigger_manager {
         ]);
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Frequency protection.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Returns true if a trigger is repeating (dismiss = delete, not permanently block).
@@ -279,9 +296,9 @@ class trigger_manager {
         return false;
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Dispatch — writes pending modal record.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Dispatch.
@@ -289,14 +306,13 @@ class trigger_manager {
     private static function dispatch(
         \stdClass $rule,
         \stdClass $user,
-        string $trigger,
-        ?int $courseid,
+        string $trigger, ?int $courseid,
         array $context
     ): void {
         global $DB;
 
         try {
-            // NOTE: Do NOT make HTTP API calls here — dispatch() runs inside a DB
+            // NOTE: Do NOT make HTTP API calls here — dispatch() runs inside a DB.
             // Transaction during login events. HTTP calls inside transactions can fail.
             // Silently. Full survey data (questions, translations) is fetched lazily.
             // By ajax.php when the modal loads.
@@ -309,7 +325,7 @@ class trigger_manager {
 
             // Store minimal context — full survey data fetched at modal load time.
             $pendingdata = [
-                'questions' => [],  // Fetched lazily by ajax.php load action.
+                'questions' => [], // Fetched lazily by ajax.php load action.
                 'survey' => [],
                 'survey_translations' => [],
                 'trigger' => $trigger,
@@ -335,7 +351,6 @@ class trigger_manager {
 
             $DB->insert_record('local_aynurasurveys_pending', $pending);
             self::write_log($rule, $user->id, $trigger, $courseid, 'success', null, 'pending_modal_created');
-
         } catch (\Exception $e) {
             debugging(
                 "local_aynurasurveys: dispatch failed for user {$user->id}, "
@@ -346,9 +361,9 @@ class trigger_manager {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Delivery log.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Write log.
@@ -356,11 +371,8 @@ class trigger_manager {
     private static function write_log(
         \stdClass $rule,
         int $userid,
-        string $trigger,
-        ?int $courseid,
-        string $status,
-        ?int $statuscode,
-        ?string $response
+        string $trigger, ?int $courseid,
+        string $status, ?int $statuscode, ?string $response
     ): void {
         global $DB;
 
@@ -377,9 +389,9 @@ class trigger_manager {
         ]);
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Helpers.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Get conditions.

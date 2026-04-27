@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/.
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify.
 // It under the terms of the GNU General Public License as published by.
@@ -27,6 +27,8 @@
  * @copyright  2026 Aynura.Surveys
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 namespace local_aynurasurveys;
 
@@ -69,9 +71,9 @@ class data_collector {
         });
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Profile fields.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Get all custom user profile field values.
@@ -86,7 +88,7 @@ class data_collector {
 
         $profile = [];
 
-        // --- Standard Moodle user fields ---
+        // --- Standard Moodle user fields ---.
         $standardfields = [
             'username' => 'username',
             'city' => 'city',
@@ -109,7 +111,7 @@ class data_collector {
             }
         }
 
-        // --- Custom user profile fields ---
+        // --- Custom user profile fields ---.
         try {
             profile_load_data($user);
         } catch (\Exception $e) {
@@ -140,9 +142,9 @@ class data_collector {
         return $profile;
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Course data.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Get course metadata including standard fields and custom course fields.
@@ -209,9 +211,9 @@ class data_collector {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Cohorts.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Get all cohort names the user belongs to.
@@ -235,9 +237,9 @@ class data_collector {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Moodle context.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Build the moodle context block.

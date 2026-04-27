@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Overview dashboard for local_aynurasurveys.
@@ -22,13 +22,13 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Overview dashboard for local_aynurasurveys.
@@ -55,9 +55,9 @@ use local_aynurasurveys\trigger_manager;
 admin_externalpage_setup('local_aynurasurveys_overview');
 $PAGE->set_url(new moodle_url('/local/aynurasurveys/index.php'));
 
-// ------------------------------------------------------------------
-// Gather stats
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------.
+// Gather stats.
+// ------------------------------------------------------------------.
 $activerules   = $DB->count_records('local_aynurasurveys_rules', ['enabled' => 1]);
 $archivedrules = $DB->count_records('local_aynurasurveys_rules', ['enabled' => 0]);
 $totaldispatch = $DB->count_records_select('local_aynurasurveys_log', "status != 'info' AND response != 'pending_modal_created'");
@@ -102,21 +102,21 @@ try {
     $connmsg = 'Not configured';
 }
 
-// ------------------------------------------------------------------
-// Render
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------.
+// Render.
+// ------------------------------------------------------------------.
 echo $OUTPUT->header();
 
 $currentpage = 'overview';
 require_once(__DIR__ . '/templates/nav.php');
 
-// KPI row
+// KPI row.
 $kpis = [
     ['label' => 'Connection', 'value' => $connok ? '✓' : '✗',
      'sub' => $connmsg,
      'color' => $connok ? '#16a34a' : '#dc2626'],
     ['label' => 'Active Rules', 'value' => $activerules, 'sub' => $archivedrules . ' archived'],
-    ['label' => 'Total Dispatched','value'=> $totaldispatch, 'sub' => 'all time'],
+    ['label' => 'Total Dispatched', 'value' => $totaldispatch, 'sub' => 'all time'],
     ['label' => 'Success Rate', 'value' => $successrate . '%', 'sub' => $successcount . ' successful'],
     ['label' => 'Pending', 'value' => $pendingcount, 'sub' => 'awaiting display'],
     ['label' => 'Completed', 'value' => $completed, 'sub' => $dismissed . ' dismissed'],
@@ -162,8 +162,7 @@ $kpis = [
             $name = trim($log->firstname . ' ' . $log->lastname) ?: 'User #' . $log->userid;
             $statusclass = $log->status === 'success' ? 'hs-badge-green' : ($log->status === 'dismissed' ? 'hs-badge-amber' : 'hs-badge-red');
             $rulelabel = !empty($log->ruleid) ? $DB->get_field('local_aynurasurveys_rules', 'rulename', ['id' => $log->ruleid]) : null;
-            if (!$rulelabel) $rulelabel = get_string('trigger_' . $log->trigger, 'local_aynurasurveys');
-          ?>
+            if (!$rulelabel) $rulelabel = get_string('trigger_' . $log->trigger, 'local_aynurasurveys'); ?>
           <tr>
             <td style="font-weight:500;"><?php echo s($name); ?></td>
             <td>
@@ -206,8 +205,7 @@ $kpis = [
                 $badge = '<span class="hs-badge hs-badge-red">Expired</span>';
             } else {
                 $badge = '<span class="hs-badge hs-badge-green">Active</span>';
-            }
-          ?>
+            } ?>
           <tr>
             <td>
               <div style="font-weight:600;color:#1A1A2E;"><?php echo s($rule->rulename ?: get_string('trigger_' . $rule->trigger, 'local_aynurasurveys')); ?></div>
@@ -240,6 +238,6 @@ $kpis = [
 </style>
 
 <?php
-// Close hs-content div and hs-wrap div
+// Close hs-content div and hs-wrap div.
 echo '</div></div>';
 echo $OUTPUT->footer();

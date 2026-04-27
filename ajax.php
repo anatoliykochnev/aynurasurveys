@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * AJAX handler for local_aynurasurveys modal actions.
@@ -22,13 +22,13 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * AJAX handler for local_aynurasurveys modal actions.
@@ -66,11 +66,11 @@ header('Content-Type: application/json');
 $action    = required_param('action', PARAM_ALPHANUMEXT);
 $pendingid = required_param('pendingid', PARAM_INT);
 
-// load action is read-only — no sesskey needed.
-// ------------------------------------------------------------------
+// Load action is read-only — no sesskey needed.
+// ------------------------------------------------------------------.
 // Action: load — returns full modal data for the pending survey.
 // Called by JS on init to avoid large js_call_amd payloads.
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------.
 if ($action === 'load') {
     $pending = $DB->get_record('local_aynurasurveys_pending', [
         'id' => $pendingid,
@@ -86,7 +86,7 @@ if ($action === 'load') {
     // Questions are stored with context wrapper.
     $stored = json_decode($pending->questions, true) ?? [];
     // Support both old flat format and new wrapped format.
-    $questions           = isset($stored['questions'])           ? $stored['questions']           : $stored;
+    $questions           = isset($stored['questions']) ? $stored['questions'] : $stored;
     $surveyobj          = $stored['survey'] ?? [];
     $surveytranslations = $stored['survey_translations'] ?? [];
 
@@ -106,9 +106,9 @@ if ($action === 'load') {
         }
     }
 
-    // Language resolution:
-    // 1. User's Moodle language if it's in languages_enabled
-    // 2. Otherwise survey's language_default
+    // Language resolution:.
+    // 1. User's Moodle language if it's in languages_enabled.
+    // 2. Otherwise survey's language_default.
     $langdefault  = $surveyobj['language_default'] ?? 'en';
     $langsenabled = $surveyobj['languages_enabled'] ?? [$langdefault];
     $userlang     = $pending->language ?? 'en';
@@ -129,7 +129,7 @@ if ($action === 'load') {
         'surveyid' => $pending->surveyid,
         'surveyname' => $pending->surveyname,
         'titles' => $titles,
-        'questions' => $questions,   // Raw with translations intact — JS handles rendering
+        'questions' => $questions, // Raw with translations intact — JS handles rendering
         'lang' => $lang,
         'lang_default' => $langdefault,
         'langs_enabled' => array_values($langsenabled),
@@ -163,12 +163,12 @@ if (!$pending) {
     exit;
 }
 
-// ------------------------------------------------------------------
-// Action: dismiss
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------.
+// Action: dismiss.
+// ------------------------------------------------------------------.
 if ($action === 'dismiss') {
-    // For repeating triggers (every_login, recurring, login_after_inactivity),
-    // delete the pending record so the trigger can re-queue next time.
+    // For repeating triggers (every_login, recurring, login_after_inactivity),.
+    // Delete the pending record so the trigger can re-queue next time.
     // For one-time triggers, mark dismissed to permanently block re-queuing.
     if (\local_aynurasurveys\trigger_manager::is_repeating($pending->trigger)) {
         $DB->delete_records('local_aynurasurveys_pending', ['id' => $pending->id]);
@@ -201,9 +201,9 @@ if ($action === 'dismiss') {
     exit;
 }
 
-// ------------------------------------------------------------------
-// Action: submit
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------.
+// Action: submit.
+// ------------------------------------------------------------------.
 if ($action === 'submit') {
     require_sesskey();
     $answersraw   = required_param('answers', PARAM_RAW);
@@ -263,8 +263,8 @@ if ($action === 'submit') {
     $decoded    = json_decode($raw, true);
 
     if ($statuscode >= 200 && $statuscode < 300 && !empty($decoded['success'])) {
-        // For repeating triggers, delete the pending record after completion
-        // so the trigger can re-queue on the next event.
+        // For repeating triggers, delete the pending record after completion.
+        // So the trigger can re-queue on the next event.
         // For one-time triggers, mark completed to permanently block re-queuing.
         if (\local_aynurasurveys\trigger_manager::is_repeating($pending->trigger)) {
             $DB->delete_records('local_aynurasurveys_pending', ['id' => $pending->id]);

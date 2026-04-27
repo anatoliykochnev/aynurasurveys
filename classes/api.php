@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/.
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify.
 // It under the terms of the GNU General Public License as published by.
@@ -24,6 +24,8 @@
  * @copyright  2026 Aynura.Surveys
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+defined('MOODLE_INTERNAL') || die();
 
 namespace local_aynurasurveys;
 
@@ -59,9 +61,9 @@ class api {
         }
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Public API methods.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Test connectivity via GET /ping.
@@ -98,7 +100,6 @@ class api {
             }
 
             return ['success' => true, 'message' => get_string('connection_success', 'local_aynurasurveys')];
-
         } catch (\Exception $e) {
             return [
                 'success' => false,
@@ -170,11 +171,9 @@ class api {
             'moodle_user_id' => (string) $user->id,
             'moodle_course_id' => $courseid ? (string) $courseid : null,
             'language' => $user->lang ?? 'en',
-            'source' => 'moodle',
-            // Empty answers array — trigger registration only.
+            'source' => 'moodle', // Empty answers array — trigger registration only.
             // User fills in answers via the survey link sent by Aynura.Surveys.
-            'answers' => [],
-            // Extra context passed as metadata for Aynura.Surveys analytics.
+            'answers' => [], // Extra context passed as metadata for Aynura.Surveys analytics.
             'metadata' => [
                 'trigger' => $trigger,
                 'timestamp' => date('c'),
@@ -183,9 +182,9 @@ class api {
         ];
     }
 
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
     // Private HTTP helpers.
-    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------.
 
     /**
      * Make an authenticated GET request.

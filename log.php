@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Delivery log viewer for local_aynurasurveys.
@@ -22,13 +22,13 @@
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Delivery log viewer for local_aynurasurveys.
@@ -65,9 +65,9 @@ $perpage        = 50;
 $pageurl = new moodle_url('/local/aynurasurveys/log.php');
 $PAGE->set_url($pageurl);
 
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------.
 // Build query.
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------.
 $where  = [];
 $params = [];
 
@@ -101,9 +101,9 @@ $sql = "SELECT l.id, l.userid, l.surveyid, l.trigger, l.courseid,
 
 $logs = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
 
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------.
 // Render.
-// ------------------------------------------------------------------
+// ------------------------------------------------------------------.
 echo $OUTPUT->header();
 
 $currentpage = 'log';
@@ -163,8 +163,7 @@ if (empty($logs)) {
 
     foreach ($logs as $log) {
         $username = trim("{$log->firstname} {$log->lastname}") ?: $log->userid;
-        $statusbadge = $log->status === 'success'
-            ? html_writer::span(get_string('log_status_success', 'local_aynurasurveys'), 'badge badge-success')
+        $statusbadge = $log->status === 'success' ? html_writer::span(get_string('log_status_success', 'local_aynurasurveys'), 'badge badge-success')
             : html_writer::span(get_string('log_status_failed', 'local_aynurasurveys'), 'badge badge-danger');
 
         $table->data[] = [
