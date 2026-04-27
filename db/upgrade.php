@@ -171,9 +171,6 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
     if ($oldversion < 2026041316) {
         upgrade_plugin_savepoint(true, 2026041316, 'local', 'aynurasurveys');
     }
-    if ($oldversion < 2026041316) {
-        upgrade_plugin_savepoint(true, 2026041316, 'local', 'aynurasurveys');
-    }
     if ($oldversion < 2026041317) {
         upgrade_plugin_savepoint(true, 2026041317, 'local', 'aynurasurveys');
     }
@@ -311,6 +308,15 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
     }
     if ($oldversion < 2026042418) {
         upgrade_plugin_savepoint(true, 2026042418, 'local', 'aynurasurveys');
+    }
+    if ($oldversion < 2026042419) {
+        upgrade_plugin_savepoint(true, 2026042419, 'local', 'aynurasurveys');
+    }
+    if ($oldversion < 2026042420) {
+        upgrade_plugin_savepoint(true, 2026042420, 'local', 'aynurasurveys');
+    }
+    if ($oldversion < 2026042421) {
+        upgrade_plugin_savepoint(true, 2026042421, 'local', 'aynurasurveys');
     }
     return true;
 }

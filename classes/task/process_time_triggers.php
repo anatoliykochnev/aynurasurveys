@@ -1,10 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - http://moodle.org/.
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Scheduled task: process all time-based and percentage-based trigger rules.
@@ -25,16 +33,27 @@
 
 namespace local_aynurasurveys\task;
 
-defined('MOODLE_INTERNAL') || die();
 
 use local_aynurasurveys\trigger_manager;
 
+/**
+ * Scheduled task: evaluates time-based survey triggers.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class process_time_triggers extends \core\task\scheduled_task {
-
+    /**
+     * Get name.
+     */
     public function get_name(): string {
         return get_string('pluginname', 'local_aynurasurveys') . ': Process time-based triggers';
     }
 
+    /**
+     * Execute.
+     */
     public function execute(): void {
         global $DB;
 
@@ -52,12 +71,12 @@ class process_time_triggers extends \core\task\scheduled_task {
             ['today' => $today]
         );
         if (!empty($expired)) {
-            list($insql, $params) = $DB->get_in_or_equal(array_keys($expired), SQL_PARAMS_NAMED);
+            [$insql, $params] = $DB->get_in_or_equal(array_keys($expired), SQL_PARAMS_NAMED);
             $DB->set_field_select('local_aynurasurveys_rules', 'enabled', 0, "id {$insql}", $params);
             mtrace('local_aynurasurveys: auto-disabled ' . count($expired) . ' expired rule(s).');
         }
 
-        $time_triggers = [
+        $timetriggers = [
             trigger_manager::TRIGGER_DAYS_AFTER_ENROLLMENT,
             trigger_manager::TRIGGER_COURSE_PERCENT,
             trigger_manager::TRIGGER_FIXED_DATE,
@@ -68,7 +87,7 @@ class process_time_triggers extends \core\task\scheduled_task {
             trigger_manager::TRIGGER_DAYS_AFTER_QUIZ,
         ];
 
-        list($insql, $inparams) = $DB->get_in_or_equal($time_triggers, SQL_PARAMS_NAMED);
+        [$insql, $inparams] = $DB->get_in_or_equal($timetriggers, SQL_PARAMS_NAMED);
         $rules = $DB->get_records_select(
             'local_aynurasurveys_rules',
             "trigger {$insql} AND enabled = 1",
@@ -89,9 +108,12 @@ class process_time_triggers extends \core\task\scheduled_task {
     }
 
     // -----------------------------------------------------------------------
-    // Rule dispatcher
+    // Rule dispatcher.
     // -----------------------------------------------------------------------
 
+    /**
+     * Process rule.
+     */
     private function process_rule(\stdClass $rule, int $now): void {
         switch ($rule->trigger) {
             case trigger_manager::TRIGGER_DAYS_AFTER_ENROLLMENT:
@@ -129,7 +151,7 @@ class process_time_triggers extends \core\task\scheduled_task {
     }
 
     // -----------------------------------------------------------------------
-    // Individual trigger processors
+    // Individual trigger processors.
     // -----------------------------------------------------------------------
 
     /**
@@ -141,13 +163,15 @@ class process_time_triggers extends \core\task\scheduled_task {
 
         $conditions = trigger_manager::get_conditions($rule);
         $days       = (int) ($conditions['days'] ?? 0);
-        if ($days <= 0) return;
+        if ($days <= 0) {
+            return;
+        }
 
         $threshold = $now - ($days * DAYSECS);
 
         // Find enrollments that crossed the threshold since last cron run (1 hour ago).
-        $window_start = $threshold - HOURSECS;
-        $window_end   = $threshold;
+        $windowstart = $threshold - HOURSECS;
+        $windowend   = $threshold;
 
         $coursefilter = $this->get_course_filter_sql($rule, 'ue.courseid');
 
@@ -160,15 +184,17 @@ class process_time_triggers extends \core\task\scheduled_task {
                        {$coursefilter['sql']}";
 
         $params = array_merge([
-            'window_start' => $window_start,
-            'window_end'   => $window_end,
+            'window_start' => $windowstart,
+            'window_end'   => $windowend,
         ], $coursefilter['params']);
 
         $enrollments = $DB->get_records_sql($sql, $params);
 
         foreach ($enrollments as $enrollment) {
             $user = $DB->get_record('user', ['id' => $enrollment->userid], 'id, email, firstname, lastname');
-            if (!$user) continue;
+            if (!$user) {
+                continue;
+            }
 
             trigger_manager::fire(
                 trigger_manager::TRIGGER_DAYS_AFTER_ENROLLMENT,
@@ -194,8 +220,10 @@ class process_time_triggers extends \core\task\scheduled_task {
         global $DB;
 
         $conditions = trigger_manager::get_conditions($rule);
-        $target_pct = (float) ($conditions['percent'] ?? 0);
-        if ($target_pct <= 0) return;
+        $targetpct = (float) ($conditions['percent'] ?? 0);
+        if ($targetpct <= 0) {
+            return;
+        }
 
         $coursefilter = $this->get_course_filter_sql($rule, 'e.courseid');
 
@@ -224,10 +252,14 @@ class process_time_triggers extends \core\task\scheduled_task {
 
             // Check if percentage is within the trigger window.
             // We fire when pct is >= target but we have not yet dispatched this rule for this user.
-            if ($pct < $target_pct) continue;
+            if ($pct < $targetpct) {
+                continue;
+            }
 
             $user = $DB->get_record('user', ['id' => $row->userid], 'id, email, firstname, lastname');
-            if (!$user) continue;
+            if (!$user) {
+                continue;
+            }
 
             trigger_manager::fire(
                 trigger_manager::TRIGGER_COURSE_PERCENT,
@@ -237,7 +269,7 @@ class process_time_triggers extends \core\task\scheduled_task {
                     'coursename'      => $row->fullname,
                     'courseshortname' => $row->shortname,
                     'percent_reached' => round($pct, 1),
-                    'target_percent'  => $target_pct,
+                    'target_percent'  => $targetpct,
                 ]
             );
         }
@@ -251,14 +283,18 @@ class process_time_triggers extends \core\task\scheduled_task {
         global $DB;
 
         $conditions  = trigger_manager::get_conditions($rule);
-        $fixed_date  = (int) ($conditions['fixed_date'] ?? 0);
-        if ($fixed_date <= 0 || $fixed_date > $now) return;
+        $fixeddate  = (int) ($conditions['fixed_date'] ?? 0);
+        if ($fixeddate <= 0 || $fixeddate > $now) {
+            return;
+        }
 
         // Only fire within a 1-hour window after the fixed date to avoid re-firing.
-        if ($now > $fixed_date + HOURSECS) return;
+        if ($now > $fixeddate + HOURSECS) {
+            return;
+        }
 
         $this->fire_for_all_enrolled_users($rule, $now, trigger_manager::TRIGGER_FIXED_DATE, [
-            'fixed_date' => date('c', $fixed_date),
+            'fixed_date' => date('c', $fixeddate),
         ]);
     }
 
@@ -270,18 +306,20 @@ class process_time_triggers extends \core\task\scheduled_task {
         $conditions  = trigger_manager::get_conditions($rule);
         $recurrence  = $conditions['recurrence'] ?? '';
 
-        $should_fire = match($recurrence) {
+        $shouldfire = match($recurrence) {
             'daily'   => true,  // Task runs hourly — fire once per day using the log.
             'weekly'  => (date('N', $now) === '1'), // Monday.
             'monthly' => (date('j', $now) === '1'), // 1st of month.
             default   => false,
         };
 
-        if (!$should_fire) return;
+        if (!$shouldfire) {
+            return;
+        }
 
-        // For recurring, frequency protection is relaxed — we allow re-firing
-        // on schedule. We handle this by checking the log for entries within
-        // the current recurrence period instead of all-time.
+        // For recurring, frequency protection is relaxed — we allow re-firing.
+        // On schedule. We handle this by checking the log for entries within.
+        // The current recurrence period instead of all-time.
         $this->fire_for_all_enrolled_users($rule, $now, trigger_manager::TRIGGER_RECURRING, [
             'recurrence' => $recurrence,
         ], $recurrence);
@@ -296,12 +334,14 @@ class process_time_triggers extends \core\task\scheduled_task {
 
         $conditions = trigger_manager::get_conditions($rule);
         $days       = (int) ($conditions['days'] ?? 0);
-        if ($days <= 0) return;
+        if ($days <= 0) {
+            return;
+        }
 
         $coursefilter = $this->get_course_filter_sql($rule, 'c.id');
 
-        $target_start_min = $now - (($days + 0) * DAYSECS) - HOURSECS;
-        $target_start_max = $now - ($days * DAYSECS);
+        $targetstartmin = $now - (($days + 0) * DAYSECS) - HOURSECS;
+        $targetstartmax = $now - ($days * DAYSECS);
 
         $sql = "SELECT ue.userid, c.id AS courseid, c.fullname, c.shortname
                   FROM {course} c
@@ -312,14 +352,16 @@ class process_time_triggers extends \core\task\scheduled_task {
                        {$coursefilter['sql']}";
 
         $params = array_merge([
-            'min' => $target_start_min,
-            'max' => $target_start_max,
+            'min' => $targetstartmin,
+            'max' => $targetstartmax,
         ], $coursefilter['params']);
 
         $rows = $DB->get_records_sql($sql, $params);
         foreach ($rows as $row) {
             $user = $DB->get_record('user', ['id' => $row->userid], 'id, email, firstname, lastname');
-            if (!$user) continue;
+            if (!$user) {
+                continue;
+            }
             trigger_manager::fire(
                 trigger_manager::TRIGGER_DAYS_AFTER_START,
                 $user, (int) $row->courseid,
@@ -337,12 +379,14 @@ class process_time_triggers extends \core\task\scheduled_task {
 
         $conditions = trigger_manager::get_conditions($rule);
         $days       = (int) ($conditions['days'] ?? 0);
-        if ($days <= 0) return;
+        if ($days <= 0) {
+            return;
+        }
 
         $coursefilter = $this->get_course_filter_sql($rule, 'c.id');
 
-        $target_end_min = $now + ($days * DAYSECS);
-        $target_end_max = $target_end_min + HOURSECS;
+        $targetendmin = $now + ($days * DAYSECS);
+        $targetendmax = $targetendmin + HOURSECS;
 
         $sql = "SELECT ue.userid, c.id AS courseid, c.fullname, c.shortname
                   FROM {course} c
@@ -353,14 +397,16 @@ class process_time_triggers extends \core\task\scheduled_task {
                        {$coursefilter['sql']}";
 
         $params = array_merge([
-            'min' => $target_end_min,
-            'max' => $target_end_max,
+            'min' => $targetendmin,
+            'max' => $targetendmax,
         ], $coursefilter['params']);
 
         $rows = $DB->get_records_sql($sql, $params);
         foreach ($rows as $row) {
             $user = $DB->get_record('user', ['id' => $row->userid], 'id, email, firstname, lastname');
-            if (!$user) continue;
+            if (!$user) {
+                continue;
+            }
             trigger_manager::fire(
                 trigger_manager::TRIGGER_DAYS_BEFORE_END,
                 $user, (int) $row->courseid,
@@ -378,12 +424,14 @@ class process_time_triggers extends \core\task\scheduled_task {
 
         $conditions = trigger_manager::get_conditions($rule);
         $days       = (int) ($conditions['days'] ?? 0);
-        if ($days <= 0) return;
+        if ($days <= 0) {
+            return;
+        }
 
         $coursefilter = $this->get_course_filter_sql($rule, 'cc.course');
 
-        $target_min = $now - (($days + 0) * DAYSECS) - HOURSECS;
-        $target_max = $now - ($days * DAYSECS);
+        $targetmin = $now - (($days + 0) * DAYSECS) - HOURSECS;
+        $targetmax = $now - ($days * DAYSECS);
 
         $sql = "SELECT cc.userid, cc.course AS courseid, c.fullname, c.shortname
                   FROM {course_completions} cc
@@ -393,14 +441,16 @@ class process_time_triggers extends \core\task\scheduled_task {
                        {$coursefilter['sql']}";
 
         $params = array_merge([
-            'min' => $target_min,
-            'max' => $target_max,
+            'min' => $targetmin,
+            'max' => $targetmax,
         ], $coursefilter['params']);
 
         $rows = $DB->get_records_sql($sql, $params);
         foreach ($rows as $row) {
             $user = $DB->get_record('user', ['id' => $row->userid], 'id, email, firstname, lastname');
-            if (!$user) continue;
+            if (!$user) {
+                continue;
+            }
             trigger_manager::fire(
                 trigger_manager::TRIGGER_DAYS_AFTER_COMPLETION,
             trigger_manager::TRIGGER_DAYS_AFTER_QUIZ,
@@ -420,10 +470,12 @@ class process_time_triggers extends \core\task\scheduled_task {
 
         $conditions = trigger_manager::get_conditions($rule);
         $days       = (int) ($conditions['days'] ?? 0);
-        if ($days <= 0) return;
+        if ($days <= 0) {
+            return;
+        }
 
-        $target_min = $now - ($days * DAYSECS) - HOURSECS;
-        $target_max = $now - ($days * DAYSECS);
+        $targetmin = $now - ($days * DAYSECS) - HOURSECS;
+        $targetmax = $now - ($days * DAYSECS);
 
         $coursefilter = $this->get_course_filter_sql($rule, 'l.courseid');
 
@@ -437,14 +489,16 @@ class process_time_triggers extends \core\task\scheduled_task {
                        {$coursefilter['sql']}";
 
         $params = array_merge([
-            'tmin' => $target_min,
-            'tmax' => $target_max,
+            'tmin' => $targetmin,
+            'tmax' => $targetmax,
         ], $coursefilter['params']);
 
         $rows = $DB->get_records_sql($sql, $params);
         foreach ($rows as $row) {
             $user = $DB->get_record('user', ['id' => $row->userid], 'id, email, firstname, lastname, lang');
-            if (!$user) continue;
+            if (!$user) {
+                continue;
+            }
             trigger_manager::fire(
                 trigger_manager::TRIGGER_DAYS_AFTER_QUIZ,
                 $user, (int) $row->courseid,
@@ -458,7 +512,7 @@ class process_time_triggers extends \core\task\scheduled_task {
     }
 
     // -----------------------------------------------------------------------
-    // Shared helpers
+    // Shared helpers.
     // -----------------------------------------------------------------------
 
     /**
@@ -468,14 +522,14 @@ class process_time_triggers extends \core\task\scheduled_task {
      * @param \stdClass   $rule
      * @param int         $now
      * @param string      $trigger
-     * @param array       $extra_context
+     * @param array       $extracontext
      * @param string|null $recurrence  If set, applies recurrence-period dedup instead of all-time.
      */
     private function fire_for_all_enrolled_users(
         \stdClass $rule,
         int $now,
         string $trigger,
-        array $extra_context = [],
+        array $extracontext = [],
         ?string $recurrence = null
     ): void {
         global $DB;
@@ -493,11 +547,13 @@ class process_time_triggers extends \core\task\scheduled_task {
 
         foreach ($rows as $row) {
             $user = $DB->get_record('user', ['id' => $row->userid], 'id, email, firstname, lastname');
-            if (!$user) continue;
+            if (!$user) {
+                continue;
+            }
 
             // For recurring triggers, check within the current period instead of all-time.
             if ($recurrence) {
-                $period_start = match($recurrence) {
+                $periodstart = match($recurrence) {
                     'daily'   => strtotime('today midnight'),
                     'weekly'  => strtotime('last Monday midnight'),
                     'monthly' => strtotime('first day of this month midnight'),
@@ -507,7 +563,7 @@ class process_time_triggers extends \core\task\scheduled_task {
                 if ($DB->record_exists_select(
                     'local_aynurasurveys_log',
                     'userid = :uid AND surveyid = :sid AND trigger = :t AND timecreated >= :period AND status = :s',
-                    ['uid' => $user->id, 'sid' => $rule->surveyid, 't' => $trigger, 'period' => $period_start, 's' => 'success']
+                    ['uid' => $user->id, 'sid' => $rule->surveyid, 't' => $trigger, 'period' => $periodstart, 's' => 'success']
                 )) {
                     continue;
                 }
@@ -517,7 +573,7 @@ class process_time_triggers extends \core\task\scheduled_task {
                 $trigger,
                 $user,
                 (int) $row->courseid,
-                array_merge($extra_context, [
+                array_merge($extracontext, [
                     'coursename'      => $row->fullname,
                     'courseshortname' => $row->shortname,
                 ])
@@ -529,10 +585,10 @@ class process_time_triggers extends \core\task\scheduled_task {
      * Build a SQL fragment + params to filter by course scope.
      *
      * @param \stdClass $rule
-     * @param string    $courseid_field  The SQL alias/field referencing the course ID.
+     * @param string    $courseidfield  The SQL alias/field referencing the course ID.
      * @return array ['sql' => string, 'params' => array]
      */
-    private function get_course_filter_sql(\stdClass $rule, string $courseid_field): array {
+    private function get_course_filter_sql(\stdClass $rule, string $courseidfield): array {
         global $DB;
 
         if ($rule->scope === 'global') {
@@ -551,7 +607,7 @@ class process_time_triggers extends \core\task\scheduled_task {
             return ['sql' => 'AND 1=0', 'params' => []];
         }
 
-        list($insql, $params) = $DB->get_in_or_equal($courseids, SQL_PARAMS_NAMED, 'cid');
-        return ['sql' => "AND {$courseid_field} {$insql}", 'params' => $params];
+        [$insql, $params] = $DB->get_in_or_equal($courseids, SQL_PARAMS_NAMED, 'cid');
+        return ['sql' => "AND {$courseidfield} {$insql}", 'params' => $params];
     }
 }

@@ -1,10 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - http://moodle.org/.
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Trigger manager for local_aynurasurveys.
@@ -16,11 +24,17 @@
 
 namespace local_aynurasurveys;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Manages survey trigger evaluation, frequency protection, and dispatch.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class trigger_manager {
-
     // Trigger type constants.
+    /** @var string Trigger type: first login. */
     const TRIGGER_FIRST_LOGIN            = 'first_login';
     const TRIGGER_EVERY_LOGIN            = 'every_login';
     const TRIGGER_LOGIN_AFTER_INACTIVITY = 'login_after_inactivity';
@@ -65,6 +79,9 @@ class trigger_manager {
         self::TRIGGER_DAYS_AFTER_QUIZ,
     ];
 
+    /**
+     * Get all triggers.
+     */
     public static function get_all_triggers(): array {
         return [
             self::TRIGGER_FIRST_LOGIN,
@@ -90,9 +107,12 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Main dispatch entry point
+    // Main dispatch entry point.
     // -----------------------------------------------------------------------
 
+    /**
+     * Fire.
+     */
     public static function fire(
         string $trigger,
         \stdClass $user,
@@ -144,9 +164,12 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Validity period check
+    // Validity period check.
     // -----------------------------------------------------------------------
 
+    /**
+     * Is rule valid.
+     */
     public static function is_rule_valid(\stdClass $rule, ?int $today = null): bool {
         $today = $today ?? mktime(0, 0, 0);
 
@@ -155,8 +178,8 @@ class trigger_manager {
         }
 
         if (!empty($rule->valid_until)) {
-            $end_of_day = (int) $rule->valid_until + 86399; // 23:59:59.
-            if ($today > $end_of_day) {
+            $endofday = (int) $rule->valid_until + 86399; // 23:59:59.
+            if ($today > $endofday) {
                 return false; // Expired.
             }
         }
@@ -165,9 +188,12 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Scope check
+    // Scope check.
     // -----------------------------------------------------------------------
 
+    /**
+     * Rule matches course.
+     */
     private static function rule_matches_course(\stdClass $rule, ?int $courseid): bool {
         global $DB;
 
@@ -186,7 +212,7 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Frequency protection
+    // Frequency protection.
     // -----------------------------------------------------------------------
 
     /**
@@ -201,13 +227,16 @@ class trigger_manager {
         ], true);
     }
 
+    /**
+     * Already dispatched.
+     */
     private static function already_dispatched(\stdClass $rule, int $userid, ?int $courseid): bool {
         global $DB;
 
-        $display_context = $rule->display_context ?? 'site';
-        $is_repeating    = self::is_repeating($rule->trigger);
+        $displaycontext = $rule->display_context ?? 'site';
+        $isrepeating    = self::is_repeating($rule->trigger);
 
-        if ($is_repeating) {
+        if ($isrepeating) {
             // Repeating triggers: only block if a pending record exists (survey queued but not seen yet).
             // Dismissed records are deleted, completed records allow re-queue on next event.
             if ($DB->record_exists('local_aynurasurveys_pending', [
@@ -232,7 +261,7 @@ class trigger_manager {
             }
 
             // Also block if already submitted successfully (log table).
-            if ($display_context === 'course' && $courseid !== null) {
+            if ($displaycontext === 'course' && $courseid !== null) {
                 return $DB->record_exists('local_aynurasurveys_log', [
                     'userid'   => $userid,
                     'surveyid' => $rule->surveyid,
@@ -251,9 +280,12 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Dispatch — writes pending modal record
+    // Dispatch — writes pending modal record.
     // -----------------------------------------------------------------------
 
+    /**
+     * Dispatch.
+     */
     private static function dispatch(
         \stdClass $rule,
         \stdClass $user,
@@ -265,24 +297,24 @@ class trigger_manager {
 
         try {
             // NOTE: Do NOT make HTTP API calls here — dispatch() runs inside a DB
-            // transaction during login events. HTTP calls inside transactions can fail
-            // silently. Full survey data (questions, translations) is fetched lazily
-            // by ajax.php when the modal loads.
+            // Transaction during login events. HTTP calls inside transactions can fail.
+            // Silently. Full survey data (questions, translations) is fetched lazily.
+            // By ajax.php when the modal loads.
 
             $language = !empty($user->lang) ? $user->lang : 'en';
 
             // Calculate show_after from delay_minutes (0 = show immediately).
             $delay = (int) ($rule->delay_minutes ?? 0);
-            $show_after = ($delay > 0) ? (time() + ($delay * 60)) : null;
+            $showafter = ($delay > 0) ? (time() + ($delay * 60)) : null;
 
             // Store minimal context — full survey data fetched at modal load time.
-            $pending_data = [
+            $pendingdata = [
                 'questions'           => [],  // Fetched lazily by ajax.php load action.
                 'survey'              => [],
                 'survey_translations' => [],
                 'trigger'             => $trigger,
                 'activity_name'       => $context['activity_name'] ?? null,
-                'coursename'          => $context['coursename']    ?? null,
+                'coursename'          => $context['coursename'] ?? null,
             ];
 
             $pending = (object) [
@@ -293,9 +325,9 @@ class trigger_manager {
                 'trigger'         => $trigger,
                 'courseid'        => $courseid,
                 'display_context' => $rule->display_context ?? 'site',
-                'questions'       => json_encode($pending_data),
+                'questions'       => json_encode($pendingdata),
                 'language'        => $language,
-                'show_after'      => $show_after,
+                'show_after'      => $showafter,
                 'status'          => 'pending',
                 'timecreated'     => time(),
                 'timeresolved'    => null,
@@ -315,9 +347,12 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Delivery log
+    // Delivery log.
     // -----------------------------------------------------------------------
 
+    /**
+     * Write log.
+     */
     private static function write_log(
         \stdClass $rule,
         int $userid,
@@ -343,9 +378,12 @@ class trigger_manager {
     }
 
     // -----------------------------------------------------------------------
-    // Helpers
+    // Helpers.
     // -----------------------------------------------------------------------
 
+    /**
+     * Get conditions.
+     */
     public static function get_conditions(\stdClass $rule): array {
         if (empty($rule->conditions)) {
             return [];
@@ -353,14 +391,23 @@ class trigger_manager {
         return json_decode($rule->conditions, true) ?? [];
     }
 
+    /**
+     * Is login trigger.
+     */
     public static function is_login_trigger(string $trigger): bool {
         return in_array($trigger, self::LOGIN_TRIGGERS, true);
     }
 
+    /**
+     * Is quiz trigger.
+     */
     public static function is_quiz_trigger(string $trigger): bool {
         return in_array($trigger, self::QUIZ_TRIGGERS, true);
     }
 
+    /**
+     * Requires completion.
+     */
     public static function requires_completion(string $trigger): bool {
         return in_array($trigger, self::COMPLETION_TRIGGERS, true);
     }

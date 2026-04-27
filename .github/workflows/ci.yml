@@ -134,7 +134,8 @@ jobs:
             --plugin ./plugin \
             --db-host=127.0.0.1 \
             --db-type=${{ matrix.database }} \
-            --moodle=${{ matrix.moodle-branch }}
+            --moodle=${{ matrix.moodle-branch }} \
+            --branch=${{ github.head_ref || github.ref_name }}
         env:
           DB: ${{ matrix.database }}
 
@@ -162,7 +163,7 @@ jobs:
         continue-on-error: true
 
       - name: Validate
-        run: moodle-plugin-ci validate ./plugin
+        run: moodle-plugin-ci validate ./plugin --moodle moodle
         if: always()
 
       - name: Check upgrade savepoints

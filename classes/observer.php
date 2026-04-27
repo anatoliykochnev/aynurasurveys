@@ -1,10 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - http://moodle.org/.
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Event observer for local_aynurasurveys.
@@ -20,12 +28,17 @@
 
 namespace local_aynurasurveys;
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Event observer callbacks for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class observer {
-
     // -----------------------------------------------------------------------
-    // User-Based Triggers
+    // User-Based Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -52,7 +65,7 @@ class observer {
     }
 
     // -----------------------------------------------------------------------
-    // Enrollment-Based Triggers
+    // Enrollment-Based Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -76,8 +89,7 @@ class observer {
         trigger_manager::fire(
             trigger_manager::TRIGGER_UNENROLLED,
             $user,
-            $courseid,
-            [
+            $courseid, [
                 'coursename'      => $course->fullname ?? '',
                 'courseshortname' => $course->shortname ?? '',
             ]
@@ -85,7 +97,7 @@ class observer {
     }
 
     // -----------------------------------------------------------------------
-    // Course Progress Triggers
+    // Course Progress Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -106,8 +118,7 @@ class observer {
         // Check if we have already fired a course_started for this user+course.
         $already = $DB->record_exists_select(
             'local_aynurasurveys_log',
-            'userid = :userid AND trigger = :trigger AND courseid = :courseid',
-            [
+            'userid = :userid AND trigger = :trigger AND courseid = :courseid', [
                 'userid'   => $userid,
                 'trigger'  => trigger_manager::TRIGGER_COURSE_STARTED,
                 'courseid' => $courseid,
@@ -128,8 +139,7 @@ class observer {
         trigger_manager::fire(
             trigger_manager::TRIGGER_COURSE_STARTED,
             $user,
-            $courseid,
-            [
+            $courseid, [
                 'coursename'      => $course->fullname,
                 'courseshortname' => $course->shortname,
             ]
@@ -157,8 +167,7 @@ class observer {
         trigger_manager::fire(
             trigger_manager::TRIGGER_COURSE_COMPLETED,
             $user,
-            $courseid,
-            [
+            $courseid, [
                 'coursename'      => $course->fullname,
                 'courseshortname' => $course->shortname,
                 'completed_at'    => date('c', time()),
@@ -167,7 +176,7 @@ class observer {
     }
 
     // -----------------------------------------------------------------------
-    // Grade-Based Triggers
+    // Grade-Based Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -211,12 +220,12 @@ class observer {
 
         // --- grade_passed ---
         // Load rules, check each threshold.
-        $passed_rules = $DB->get_records('local_aynurasurveys_rules', [
+        $passedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_GRADE_PASSED,
             'enabled' => 1,
         ]);
 
-        foreach ($passed_rules as $rule) {
+        foreach ($passedrules as $rule) {
             $conditions = trigger_manager::get_conditions($rule);
             $threshold  = (float) ($conditions['threshold'] ?? 0);
             if ($percentage >= $threshold) {
@@ -231,12 +240,12 @@ class observer {
         }
 
         // --- grade_failed ---
-        $failed_rules = $DB->get_records('local_aynurasurveys_rules', [
+        $failedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_GRADE_FAILED,
             'enabled' => 1,
         ]);
 
-        foreach ($failed_rules as $rule) {
+        foreach ($failedrules as $rule) {
             $conditions = trigger_manager::get_conditions($rule);
             $threshold  = (float) ($conditions['threshold'] ?? 100);
             if ($percentage < $threshold) {
@@ -252,7 +261,7 @@ class observer {
     }
 
     // -----------------------------------------------------------------------
-    // Activity Completion Trigger
+    // Activity Completion Trigger.
     // -----------------------------------------------------------------------
 
     /**
@@ -267,10 +276,10 @@ class observer {
         global $DB;
 
         // Only fire on completion (completionstate 1 = complete, 2 = complete with pass).
-        // Note: for course_module_completion_updated:
-        //   $event->objectid          = course_modules_completion.id (the completion record ID)
-        //   $event->contextinstanceid = course module ID (cmid)
-        //   $event->other['completionstate'] = the new state
+        // Note: for course_module_completion_updated:.
+        //   $event->objectid          = course_modules_completion.id (the completion record ID).
+        //   $event->contextinstanceid = course module ID (cmid).
+        //   $event->other['completionstate'] = the new state.
         $completionstate = $event->other['completionstate'] ?? 0;
         if ($completionstate < 1) {
             return;
@@ -280,7 +289,7 @@ class observer {
         $courseid = $event->courseid;
         $cmid     = $event->contextinstanceid; // actual course module ID.
 
-        $user   = $DB->get_record('user',   ['id' => $userid],   'id, email, firstname, lastname, lang');
+        $user   = $DB->get_record('user', ['id' => $userid], 'id, email, firstname, lastname, lang');
         $course = $DB->get_record('course', ['id' => $courseid], 'id, fullname, shortname');
         if (!$user || !$course) {
             return;
@@ -288,11 +297,11 @@ class observer {
 
         // Get the activity name for context.
         $cm = $DB->get_record('course_modules', ['id' => $cmid], 'id, module, instance');
-        $activity_name = '';
+        $activityname = '';
         if ($cm) {
             $modname = $DB->get_field('modules', 'name', ['id' => $cm->module]);
             if ($modname) {
-                $activity_name = $DB->get_field($modname, 'name', ['id' => $cm->instance]) ?: '';
+                $activityname = $DB->get_field($modname, 'name', ['id' => $cm->instance]) ?: '';
             }
         }
 
@@ -300,7 +309,7 @@ class observer {
             'coursename'      => $course->fullname,
             'courseshortname' => $course->shortname,
             'cmid'            => $cmid,
-            'activity_name'   => $activity_name,
+            'activity_name'   => $activityname,
         ];
 
         // Load enabled activity_completed rules.
@@ -311,11 +320,11 @@ class observer {
 
         foreach ($rules as $rule) {
             $conditions = trigger_manager::get_conditions($rule);
-            $rule_cmid  = isset($conditions['cmid']) ? (int) $conditions['cmid'] : 0;
+            $rulecmid  = isset($conditions['cmid']) ? (int) $conditions['cmid'] : 0;
 
             // If rule has a specific cmid, it must match.
             // If no cmid set (global scope / any activity), always proceed.
-            if ($rule_cmid > 0 && $rule_cmid !== (int) $cmid) {
+            if ($rulecmid > 0 && $rulecmid !== (int) $cmid) {
                 continue;
             }
 
@@ -325,14 +334,14 @@ class observer {
                 $courseid,
                 $context
             );
-            // fire() handles scope, frequency, and dispatch — break after
-            // first match to avoid duplicate fire() calls for same rule set.
+            // Fire() handles scope, frequency, and dispatch — break after.
+            // First match to avoid duplicate fire() calls for same rule set.
             break;
         }
     }
 
     // -----------------------------------------------------------------------
-    // Quiz Triggers
+    // Quiz Triggers.
     // -----------------------------------------------------------------------
 
     /**
@@ -367,7 +376,7 @@ class observer {
         // Calculate percentage.
         $percentage = ((float) $attempt->sumgrades / (float) $quiz->sumgrades) * 100;
 
-        $user   = $DB->get_record('user',   ['id' => $userid],   'id, email, firstname, lastname, lang');
+        $user   = $DB->get_record('user', ['id' => $userid], 'id, email, firstname, lastname, lang');
         $course = $DB->get_record('course', ['id' => $courseid], 'id, fullname, shortname');
         if (!$user || !$course) {
             return;
@@ -380,12 +389,12 @@ class observer {
             'grade_percent'   => round($percentage, 2),
         ];
 
-        // quiz_passed — check each rule's threshold.
-        $passed_rules = $DB->get_records('local_aynurasurveys_rules', [
+        // Quiz_passed — check each rule's threshold.
+        $passedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_QUIZ_PASSED,
             'enabled' => 1,
         ]);
-        foreach ($passed_rules as $rule) {
+        foreach ($passedrules as $rule) {
             $conditions = trigger_manager::get_conditions($rule);
             $threshold  = (float) ($conditions['threshold'] ?? 0);
             if ($percentage >= $threshold) {
@@ -397,12 +406,12 @@ class observer {
             }
         }
 
-        // quiz_failed — check each rule's threshold.
-        $failed_rules = $DB->get_records('local_aynurasurveys_rules', [
+        // Quiz_failed — check each rule's threshold.
+        $failedrules = $DB->get_records('local_aynurasurveys_rules', [
             'trigger' => trigger_manager::TRIGGER_QUIZ_FAILED,
             'enabled' => 1,
         ]);
-        foreach ($failed_rules as $rule) {
+        foreach ($failedrules as $rule) {
             $conditions = trigger_manager::get_conditions($rule);
             $threshold  = (float) ($conditions['threshold'] ?? 100);
             if ($percentage < $threshold) {

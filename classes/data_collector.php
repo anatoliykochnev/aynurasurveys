@@ -1,10 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - http://moodle.org/.
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Data collector for local_aynurasurveys.
@@ -22,14 +30,19 @@
 
 namespace local_aynurasurveys;
 
-defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/user/profile/lib.php');
 require_once($CFG->dirroot . '/cohort/lib.php');
 
+/**
+ * Collects Moodle user, course, and cohort metadata at survey submission time.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class data_collector {
-
     /**
      * Collect all available metadata for a user + course context.
      *
@@ -57,7 +70,7 @@ class data_collector {
     }
 
     // -----------------------------------------------------------------------
-    // Profile fields
+    // Profile fields.
     // -----------------------------------------------------------------------
 
     /**
@@ -74,23 +87,23 @@ class data_collector {
         $profile = [];
 
         // --- Standard Moodle user fields ---
-        $standard_fields = [
-            'username'    => 'username',
-            'city'        => 'city',
-            'country'     => 'country',
-            'lang'        => 'language',
-            'timezone'    => 'timezone',
+        $standardfields = [
+            'username' => 'username',
+            'city' => 'city',
+            'country' => 'country',
+            'lang' => 'language',
+            'timezone' => 'timezone',
             'institution' => 'institution',
-            'department'  => 'department',
-            'phone1'      => 'phone',
-            'phone2'      => 'phone2',
-            'address'     => 'address',
+            'department' => 'department',
+            'phone1' => 'phone',
+            'phone2' => 'phone2',
+            'address' => 'address',
             'description' => 'description',
-            'url'         => 'website',
-            'idnumber'    => 'id_number',
+            'url' => 'website',
+            'idnumber' => 'id_number',
         ];
 
-        foreach ($standard_fields as $prop => $key) {
+        foreach ($standardfields as $prop => $key) {
             if (!empty($user->$prop)) {
                 $profile[$key] = (string) $user->$prop;
             }
@@ -128,7 +141,7 @@ class data_collector {
     }
 
     // -----------------------------------------------------------------------
-    // Course data
+    // Course data.
     // -----------------------------------------------------------------------
 
     /**
@@ -147,17 +160,17 @@ class data_collector {
         }
 
         // Get category name.
-        $category_name = '';
+        $categoryname = '';
         if ($course->category) {
-            $category_name = $DB->get_field('course_categories', 'name', ['id' => $course->category]) ?: '';
+            $categoryname = $DB->get_field('course_categories', 'name', ['id' => $course->category]) ?: '';
         }
 
         $data = [
-            'fullname'  => $course->fullname,
+            'fullname' => $course->fullname,
             'shortname' => $course->shortname,
-            'category'  => $category_name,
+            'category' => $categoryname,
             'start_date'=> $course->startdate ? date('Y-m-d', $course->startdate) : null,
-            'end_date'  => $course->enddate   ? date('Y-m-d', $course->enddate)   : null,
+            'end_date' => $course->enddate ? date('Y-m-d', $course->enddate) : null,
         ];
 
         // Course custom fields (Moodle 3.7+).
@@ -197,7 +210,7 @@ class data_collector {
     }
 
     // -----------------------------------------------------------------------
-    // Cohorts
+    // Cohorts.
     // -----------------------------------------------------------------------
 
     /**
@@ -223,7 +236,7 @@ class data_collector {
     }
 
     // -----------------------------------------------------------------------
-    // Moodle context
+    // Moodle context.
     // -----------------------------------------------------------------------
 
     /**
@@ -236,10 +249,10 @@ class data_collector {
         global $CFG;
 
         $moodle = [
-            'trigger'          => $context['trigger']       ?? null,
-            'activity_name'    => $context['activity_name'] ?? null,
-            'site_url'         => rtrim($CFG->wwwroot, '/'),
-            'submission_time'  => date('c'),
+            'trigger' => $context['trigger'] ?? null,
+            'activity_name' => $context['activity_name'] ?? null,
+            'site_url' => rtrim($CFG->wwwroot, '/'),
+            'submission_time' => date('c'),
         ];
 
         // Remove nulls.

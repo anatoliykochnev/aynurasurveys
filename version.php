@@ -17,7 +17,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'local_aynurasurveys';
-$plugin->version      = 2026042418;
+$plugin->version      = 2026042421;
 $plugin->requires     = 2024100700;
 $plugin->maturity     = MATURITY_STABLE;
-$plugin->release      = '2.1.5';
+$plugin->release      = '2.2.0';
