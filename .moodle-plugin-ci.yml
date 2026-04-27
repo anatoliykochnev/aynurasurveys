@@ -1,14 +1,12 @@
 # Moodle Plugin CI configuration for local_aynurasurveys.
 # See https://moodlehq.github.io/moodle-plugin-ci/
 
-# Paths to ignore in code checks.
-filter:
-  notNames:
-    - "*.min.js"
-
 # PHP Mess Detector ruleset.
 phpmd: phpmd.xml
 
+# Paths and filenames to ignore in code checks.
 filter:
+  notNames:
+    - "*.min.js"
   notPaths:
     - templates/
