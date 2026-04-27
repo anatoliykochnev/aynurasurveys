@@ -1,10 +1,42 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Plugin settings page for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Plugin settings page for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Custom settings page for local_aynurasurveys.
@@ -35,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $enabled = optional_param('enabled', 0, PARAM_INT);
     $baseurl = optional_param('baseurl', '', PARAM_URL);
-    $apikey  = optional_param('apikey',  '', PARAM_RAW);
+    $apikey  = optional_param('apikey', '', PARAM_RAW);
 
     set_config('enabled', $enabled, 'local_aynurasurveys');
     set_config('baseurl', rtrim($baseurl, '/'), 'local_aynurasurveys');
@@ -59,13 +91,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ------------------------------------------------------------------
 // Load current config
 // ------------------------------------------------------------------
-$cfg_enabled = (bool) get_config('local_aynurasurveys', 'enabled');
-$cfg_baseurl = (string) get_config('local_aynurasurveys', 'baseurl');
-$cfg_apikey  = (string) get_config('local_aynurasurveys', 'apikey');
-$masked_key  = $cfg_apikey ? substr($cfg_apikey, 0, 6) . str_repeat('•', max(0, strlen($cfg_apikey) - 6)) : '';
+$cfgenabled = (bool) get_config('local_aynurasurveys', 'enabled');
+$cfgbaseurl = (string) get_config('local_aynurasurveys', 'baseurl');
+$cfgapikey  = (string) get_config('local_aynurasurveys', 'apikey');
+$maskedkey  = $cfgapikey ? substr($cfgapikey, 0, 6) . str_repeat('•', max(0, strlen($cfgapikey) - 6)) : '';
 
 // Test connection on page load if configured.
-if (!$saved && $cfg_baseurl && $cfg_apikey) {
+if (!$saved && $cfgbaseurl && $cfgapikey) {
     try {
         $apiclient = new api();
         $pingres   = $apiclient->ping();
@@ -76,7 +108,7 @@ if (!$saved && $cfg_baseurl && $cfg_apikey) {
 
 echo $OUTPUT->header();
 
-$current_page = 'settings';
+$currentpage = 'settings';
 require_once(__DIR__ . '/templates/nav.php');
 ?>
 <style>
@@ -222,7 +254,7 @@ require_once(__DIR__ . '/templates/nav.php');
     </div>
     <div class="hs-toggle">
       <input type="checkbox" id="hs_enabled" name="enabled" value="1"
-             <?php echo $cfg_enabled ? 'checked' : ''; ?>>
+             <?php echo $cfgenabled ? 'checked' : ''; ?>>
       <span class="hs-toggle-slider"></span>
     </div>
   </label>
@@ -242,7 +274,7 @@ require_once(__DIR__ . '/templates/nav.php');
         </span>
       </label>
       <input type="url" name="baseurl" id="hs_baseurl" placeholder="https://..."
-             value="<?php echo s($cfg_baseurl); ?>">
+             value="<?php echo s($cfgbaseurl); ?>">
     </div>
 
     <div class="hs-field">
@@ -264,9 +296,9 @@ require_once(__DIR__ . '/templates/nav.php');
           👁
         </button>
       </div>
-      <?php if ($masked_key): ?>
+      <?php if ($maskedkey): ?>
         <div style="font-size:11px;color:#9CA3AF;margin-top:5px;">
-          Current: <code><?php echo s($masked_key); ?></code>
+          Current: <code><?php echo s($maskedkey); ?></code>
         </div>
       <?php endif; ?>
     </div>

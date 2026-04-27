@@ -206,7 +206,7 @@ class trigger_manager {
         }
 
         return $DB->record_exists('local_aynurasurveys_rule_courses', [
-            'ruleid'   => $rule->id,
+            'ruleid' => $rule->id,
             'courseid' => $courseid,
         ]);
     }
@@ -240,9 +240,9 @@ class trigger_manager {
             // Repeating triggers: only block if a pending record exists (survey queued but not seen yet).
             // Dismissed records are deleted, completed records allow re-queue on next event.
             if ($DB->record_exists('local_aynurasurveys_pending', [
-                'userid'  => $userid,
-                'ruleid'  => $rule->id,
-                'status'  => 'pending',
+                'userid' => $userid,
+                'ruleid' => $rule->id,
+                'status' => 'pending',
             ])) {
                 return true;
             }
@@ -263,16 +263,16 @@ class trigger_manager {
             // Also block if already submitted successfully (log table).
             if ($displaycontext === 'course' && $courseid !== null) {
                 return $DB->record_exists('local_aynurasurveys_log', [
-                    'userid'   => $userid,
+                    'userid' => $userid,
                     'surveyid' => $rule->surveyid,
                     'courseid' => $courseid,
-                    'status'   => 'success',
+                    'status' => 'success',
                 ]);
             }
             return $DB->record_exists('local_aynurasurveys_log', [
-                'userid'   => $userid,
+                'userid' => $userid,
                 'surveyid' => $rule->surveyid,
-                'status'   => 'success',
+                'status' => 'success',
             ]);
         }
 
@@ -309,28 +309,28 @@ class trigger_manager {
 
             // Store minimal context — full survey data fetched at modal load time.
             $pendingdata = [
-                'questions'           => [],  // Fetched lazily by ajax.php load action.
-                'survey'              => [],
+                'questions' => [],  // Fetched lazily by ajax.php load action.
+                'survey' => [],
                 'survey_translations' => [],
-                'trigger'             => $trigger,
-                'activity_name'       => $context['activity_name'] ?? null,
-                'coursename'          => $context['coursename'] ?? null,
+                'trigger' => $trigger,
+                'activity_name' => $context['activity_name'] ?? null,
+                'coursename' => $context['coursename'] ?? null,
             ];
 
             $pending = (object) [
-                'userid'          => (int) $user->id,
-                'ruleid'          => (int) $rule->id,
-                'surveyid'        => $rule->surveyid,
-                'surveyname'      => $rule->surveyname ?: $rule->surveyid,
-                'trigger'         => $trigger,
-                'courseid'        => $courseid,
+                'userid' => (int) $user->id,
+                'ruleid' => (int) $rule->id,
+                'surveyid' => $rule->surveyid,
+                'surveyname' => $rule->surveyname ?: $rule->surveyid,
+                'trigger' => $trigger,
+                'courseid' => $courseid,
                 'display_context' => $rule->display_context ?? 'site',
-                'questions'       => json_encode($pendingdata),
-                'language'        => $language,
-                'show_after'      => $showafter,
-                'status'          => 'pending',
-                'timecreated'     => time(),
-                'timeresolved'    => null,
+                'questions' => json_encode($pendingdata),
+                'language' => $language,
+                'show_after' => $showafter,
+                'status' => 'pending',
+                'timecreated' => time(),
+                'timeresolved' => null,
             ];
 
             $DB->insert_record('local_aynurasurveys_pending', $pending);
@@ -365,14 +365,14 @@ class trigger_manager {
         global $DB;
 
         $DB->insert_record('local_aynurasurveys_log', (object) [
-            'ruleid'      => $rule->id,
-            'userid'      => $userid,
-            'surveyid'    => $rule->surveyid,
-            'trigger'     => $trigger,
-            'courseid'    => $courseid,
-            'status'      => $status,
-            'statuscode'  => $statuscode,
-            'response'    => $response,
+            'ruleid' => $rule->id,
+            'userid' => $userid,
+            'surveyid' => $rule->surveyid,
+            'trigger' => $trigger,
+            'courseid' => $courseid,
+            'status' => $status,
+            'statuscode' => $statuscode,
+            'response' => $response,
             'timecreated' => time(),
         ]);
     }

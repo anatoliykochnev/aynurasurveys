@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,7 +12,31 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Rule form template for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Rule form template for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Add/edit rule form template for local_aynurasurveys.
@@ -26,37 +50,37 @@
  * Rule add/edit form — styled with hs design system.
  *
  * Variables in scope (provided by rules.php):
- *   $formaction, $trigger_options, $survey_options, $course_options,
- *   $rule (stdClass|null), $existing_courseids (array),
- *   $existing_conditions (array), $conflicturl (string)
+ *   $formaction, $triggeroptions, $surveyoptions, $courseoptions,
+ *   $rule (stdClass|null), $existingcourseids (array),
+ *   $existingconditions (array), $conflicturl (string)
  */
 defined('MOODLE_INTERNAL') || die();
 
-$sel_rulename = $rule->rulename        ?? '';
-$sel_trigger  = $rule->trigger         ?? '';
-$sel_survey   = $rule->surveyid        ?? '';
-$sel_scope    = $rule->scope           ?? 'global';
-$sel_ctx      = $rule->display_context ?? 'site';
-$sel_enabled  = isset($rule->enabled)  ? (int) $rule->enabled : 1;
-$sel_from     = !empty($rule->valid_from)  ? date('Y-m-d', $rule->valid_from)  : '';
-$sel_until    = !empty($rule->valid_until) ? date('Y-m-d', $rule->valid_until) : '';
-$use_dates    = (!empty($rule->valid_from) || !empty($rule->valid_until)) ? 1 : 0;
+$selrulename = $rule->rulename ?? '';
+$seltrigger  = $rule->trigger ?? '';
+$selsurvey   = $rule->surveyid ?? '';
+$selscope    = $rule->scope ?? 'global';
+$selctx      = $rule->display_context ?? 'site';
+$selenabled  = isset($rule->enabled)  ? (int) $rule->enabled : 1;
+$selfrom     = !empty($rule->valid_from)  ? date('Y-m-d', $rule->valid_from)  : '';
+$seluntil    = !empty($rule->valid_until) ? date('Y-m-d', $rule->valid_until) : '';
+$usedates    = (!empty($rule->valid_from) || !empty($rule->valid_until)) ? 1 : 0;
 
-$stored_delay = (int) ($rule->delay_minutes ?? 0);
-if ($stored_delay > 0 && $stored_delay % 1440 === 0) {
-    $delay_display = $stored_delay / 1440; $delay_unit = 'days';
-} elseif ($stored_delay > 0 && $stored_delay % 60 === 0) {
-    $delay_display = $stored_delay / 60;   $delay_unit = 'hours';
+$storeddelay = (int) ($rule->delay_minutes ?? 0);
+if ($storeddelay > 0 && $storeddelay % 1440 === 0) {
+    $delaydisplay = $storeddelay / 1440; $delayunit = 'days';
+} else if ($storeddelay > 0 && $storeddelay % 60 === 0) {
+    $delaydisplay = $storeddelay / 60;   $delayunit = 'hours';
 } else {
-    $delay_display = max(1, $stored_delay); $delay_unit = 'minutes';
+    $delaydisplay = max(1, $storeddelay); $delayunit = 'minutes';
 }
-$use_delay = $stored_delay > 0 ? 1 : 0;
+$usedelay = $storeddelay > 0 ? 1 : 0;
 
-$is_login         = \local_aynurasurveys\trigger_manager::is_login_trigger($sel_trigger);
-$needs_completion = \local_aynurasurveys\trigger_manager::requires_completion($sel_trigger);
+$islogin         = \local_aynurasurveys\trigger_manager::is_login_trigger($seltrigger);
+$needscompletion = \local_aynurasurveys\trigger_manager::requires_completion($seltrigger);
 
 // Condition visibility map
-$cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_after_start','days_before_end','days_after_completion','days_after_quiz'];
+$condtriggersdays = ['login_after_inactivity','days_after_enrollment','days_after_start','days_before_end','days_after_completion','days_after_quiz'];
 ?>
 
 <style>
@@ -248,7 +272,7 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
       <label for="hs_rulename"><?php echo get_string('rule_name','local_aynurasurveys'); ?> <span class="req">*</span></label>
       <input type="text" name="rulename" id="hs_rulename" required
              placeholder="e.g. Post-course feedback, New member onboarding"
-             value="<?php echo s($sel_rulename); ?>">
+             value="<?php echo s($selrulename); ?>">
     </div>
   </div>
 
@@ -257,8 +281,8 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
     <div class="hs-field">
       <label for="hs_trigger"><?php echo get_string('rule_trigger','local_aynurasurveys'); ?> <span class="req">*</span></label>
       <select name="trigger" id="hs_trigger" required>
-        <?php foreach ($trigger_options as $val => $lbl): ?>
-          <option value="<?php echo s($val); ?>" <?php echo ($sel_trigger === $val) ? 'selected' : ''; ?>>
+        <?php foreach ($triggeroptions as $val => $lbl): ?>
+          <option value="<?php echo s($val); ?>" <?php echo ($seltrigger === $val) ? 'selected' : ''; ?>>
             <?php echo s($lbl); ?>
           </option>
         <?php endforeach; ?>
@@ -268,8 +292,8 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
     <div class="hs-field">
       <label for="hs_survey"><?php echo get_string('rule_survey','local_aynurasurveys'); ?> <span class="req">*</span></label>
       <select name="surveyid" id="hs_survey" required>
-        <?php foreach ($survey_options as $val => $lbl): ?>
-          <option value="<?php echo s($val); ?>" <?php echo ($sel_survey === $val) ? 'selected' : ''; ?>>
+        <?php foreach ($surveyoptions as $val => $lbl): ?>
+          <option value="<?php echo s($val); ?>" <?php echo ($selsurvey === $val) ? 'selected' : ''; ?>>
             <?php echo s($lbl); ?>
           </option>
         <?php endforeach; ?>
@@ -282,49 +306,49 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
   <div id="hs_conditions">
 
     <div class="hs-field cond-field" id="cond_days"
-         style="display:<?php echo in_array($sel_trigger, $cond_triggers_days) ? 'block' : 'none'; ?>">
+         style="display:<?php echo in_array($seltrigger, $condtriggersdays) ? 'block' : 'none'; ?>">
       <label><?php echo get_string('condition_days','local_aynurasurveys'); ?></label>
       <input type="number" name="condition_days" min="1"
-             value="<?php echo (int)($existing_conditions['days'] ?? 1); ?>">
+             value="<?php echo (int)($existingconditions['days'] ?? 1); ?>">
     </div>
 
     <div class="hs-field cond-field" id="cond_percent"
-         style="display:<?php echo ($sel_trigger === 'course_percent') ? 'block' : 'none'; ?>">
+         style="display:<?php echo ($seltrigger === 'course_percent') ? 'block' : 'none'; ?>">
       <label><?php echo get_string('condition_percent','local_aynurasurveys'); ?></label>
       <input type="number" name="condition_percent" min="1" max="100"
-             value="<?php echo (float)($existing_conditions['percent'] ?? 50); ?>">
+             value="<?php echo (float)($existingconditions['percent'] ?? 50); ?>">
     </div>
 
     <div class="hs-field cond-field" id="cond_threshold"
-         style="display:<?php echo in_array($sel_trigger, ['grade_passed','grade_failed','quiz_passed','quiz_failed']) ? 'block' : 'none'; ?>">
+         style="display:<?php echo in_array($seltrigger, ['grade_passed','grade_failed','quiz_passed','quiz_failed']) ? 'block' : 'none'; ?>">
       <label><?php echo get_string('condition_grade_threshold','local_aynurasurveys'); ?></label>
       <input type="number" name="condition_threshold" min="0" max="100"
-             value="<?php echo (float)($existing_conditions['threshold'] ?? 50); ?>">
+             value="<?php echo (float)($existingconditions['threshold'] ?? 50); ?>">
     </div>
 
     <div class="hs-field cond-field" id="cond_fixed_date"
-         style="display:<?php echo ($sel_trigger === 'fixed_date') ? 'block' : 'none'; ?>">
+         style="display:<?php echo ($seltrigger === 'fixed_date') ? 'block' : 'none'; ?>">
       <label><?php echo get_string('condition_fixed_date','local_aynurasurveys'); ?></label>
       <input type="datetime-local" name="condition_fixed_date_human" id="cond_fixed_date_input"
-             value="<?php echo !empty($existing_conditions['fixed_date']) ? date('Y-m-d\TH:i', $existing_conditions['fixed_date']) : ''; ?>">
+             value="<?php echo !empty($existingconditions['fixed_date']) ? date('Y-m-d\TH:i', $existingconditions['fixed_date']) : ''; ?>">
       <input type="hidden" name="condition_fixed_date" id="cond_fixed_date_unix"
-             value="<?php echo (int)($existing_conditions['fixed_date'] ?? 0); ?>">
+             value="<?php echo (int)($existingconditions['fixed_date'] ?? 0); ?>">
     </div>
 
     <div class="hs-field cond-field" id="cond_recurrence"
-         style="display:<?php echo ($sel_trigger === 'recurring') ? 'block' : 'none'; ?>">
+         style="display:<?php echo ($seltrigger === 'recurring') ? 'block' : 'none'; ?>">
       <label><?php echo get_string('condition_recurrence','local_aynurasurveys'); ?></label>
       <?php
-      $recurrence_options = [
-          'daily'   => get_string('condition_recurrence_daily',   'local_aynurasurveys'),
-          'weekly'  => get_string('condition_recurrence_weekly',  'local_aynurasurveys'),
+      $recurrenceoptions = [
+          'daily' => get_string('condition_recurrence_daily', 'local_aynurasurveys'),
+          'weekly' => get_string('condition_recurrence_weekly', 'local_aynurasurveys'),
           'monthly' => get_string('condition_recurrence_monthly', 'local_aynurasurveys'),
       ];
-      $sel_recurrence = $existing_conditions['recurrence'] ?? '';
+      $selrecurrence = $existingconditions['recurrence'] ?? '';
       ?>
       <select name="condition_recurrence">
-        <?php foreach ($recurrence_options as $v => $l): ?>
-          <option value="<?php echo s($v); ?>" <?php echo ($sel_recurrence === $v) ? 'selected' : ''; ?>>
+        <?php foreach ($recurrenceoptions as $v => $l): ?>
+          <option value="<?php echo s($v); ?>" <?php echo ($selrecurrence === $v) ? 'selected' : ''; ?>>
             <?php echo s($l); ?>
           </option>
         <?php endforeach; ?>
@@ -337,7 +361,7 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
 
 <!-- ── Section 2: Scope & Display ───────────────────────── -->
 <div class="hs-form-section" id="hs_scope_section"
-     style="display:<?php echo $is_login ? 'none' : 'block'; ?>">
+     style="display:<?php echo $islogin ? 'none' : 'block'; ?>">
   <div class="hs-form-section-title">🎯 Scope &amp; Display</div>
 
   <div class="hs-form-grid">
@@ -348,17 +372,17 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
         <?php echo get_string('rule_scope','local_aynurasurveys'); ?>
       </div>
       <div class="hs-scope-btns">
-        <label class="hs-scope-btn <?php echo ($sel_scope === 'global') ? 'hs-scope-active' : ''; ?>"
+        <label class="hs-scope-btn <?php echo ($selscope === 'global') ? 'hs-scope-active' : ''; ?>"
                id="scope_btn_global">
           <input type="radio" name="scope" value="global"
-                 <?php echo ($sel_scope === 'global') ? 'checked' : ''; ?>>
+                 <?php echo ($selscope === 'global') ? 'checked' : ''; ?>>
           <div class="hs-scope-btn-label">🌐 All Courses</div>
           <div class="hs-scope-btn-sub">Apply globally</div>
         </label>
-        <label class="hs-scope-btn <?php echo ($sel_scope === 'course') ? 'hs-scope-active' : ''; ?>"
+        <label class="hs-scope-btn <?php echo ($selscope === 'course') ? 'hs-scope-active' : ''; ?>"
                id="scope_btn_course">
           <input type="radio" name="scope" value="course"
-                 <?php echo ($sel_scope === 'course') ? 'checked' : ''; ?>>
+                 <?php echo ($selscope === 'course') ? 'checked' : ''; ?>>
           <div class="hs-scope-btn-label">📚 Specific Courses</div>
           <div class="hs-scope-btn-sub">Choose below</div>
         </label>
@@ -371,17 +395,17 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
         <?php echo get_string('display_context','local_aynurasurveys'); ?>
       </div>
       <div class="hs-scope-btns">
-        <label class="hs-scope-btn <?php echo ($sel_ctx === 'site') ? 'hs-scope-active' : ''; ?>"
+        <label class="hs-scope-btn <?php echo ($selctx === 'site') ? 'hs-scope-active' : ''; ?>"
                id="ctx_btn_site">
           <input type="radio" name="display_context" value="site"
-                 <?php echo ($sel_ctx === 'site') ? 'checked' : ''; ?>>
+                 <?php echo ($selctx === 'site') ? 'checked' : ''; ?>>
           <div class="hs-scope-btn-label">🖥 On Site</div>
           <div class="hs-scope-btn-sub">Anywhere in Moodle</div>
         </label>
-        <label class="hs-scope-btn <?php echo ($sel_ctx === 'course') ? 'hs-scope-active' : ''; ?>"
+        <label class="hs-scope-btn <?php echo ($selctx === 'course') ? 'hs-scope-active' : ''; ?>"
                id="ctx_btn_course">
           <input type="radio" name="display_context" value="course"
-                 <?php echo ($sel_ctx === 'course') ? 'checked' : ''; ?>>
+                 <?php echo ($selctx === 'course') ? 'checked' : ''; ?>>
           <div class="hs-scope-btn-label">📖 On Course</div>
           <div class="hs-scope-btn-sub">Inside course only</div>
         </label>
@@ -391,14 +415,14 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
   </div>
 
   <!-- Course multi-select -->
-  <div id="hs_courses_row" style="display:<?php echo ($sel_scope === 'course') ? 'block' : 'none'; ?>; margin-top:16px;">
+  <div id="hs_courses_row" style="display:<?php echo ($selscope === 'course') ? 'block' : 'none'; ?>; margin-top:16px;">
     <div style="font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">
       <?php echo get_string('rule_courses','local_aynurasurveys'); ?>
     </div>
     <select name="courseids[]" id="hs_courses" class="hs-courses-select" multiple size="6">
-      <?php foreach ($course_options as $cid => $cname): ?>
+      <?php foreach ($courseoptions as $cid => $cname): ?>
         <option value="<?php echo (int)$cid; ?>"
-          <?php echo in_array($cid, $existing_courseids) ? 'selected' : ''; ?>>
+          <?php echo in_array($cid, $existingcourseids) ? 'selected' : ''; ?>>
           <?php echo s($cname); ?>
         </option>
       <?php endforeach; ?>
@@ -411,11 +435,11 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
 
   <!-- Activity selector — shown when trigger=activity_completed AND scope=course -->
   <?php
-  $sel_cmid = (int)($existing_conditions['cmid'] ?? 0);
+  $selcmid = (int)($existingconditions['cmid'] ?? 0);
   // Pre-populate activities for edit mode.
-  $preloaded_activities = [];
-  if ($sel_trigger === 'activity_completed' && !empty($existing_courseids)) {
-      foreach ($existing_courseids as $precid) {
+  $preloadedactivities = [];
+  if ($seltrigger === 'activity_completed' && !empty($existingcourseids)) {
+      foreach ($existingcourseids as $precid) {
           $presql = "SELECT cm.id AS cmid, m.name AS modname, cm.instance, c.fullname AS cname
                        FROM {course_modules} cm
                        JOIN {modules} m ON m.id = cm.module
@@ -426,45 +450,45 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
           foreach ($precms as $pcm) {
               $pname = $DB->get_field($pcm->modname, 'name', ['id' => $pcm->instance]);
               if ($pname) {
-                  $preloaded_activities[] = ['cmid' => (int)$pcm->cmid, 'name' => $pname, 'type' => $pcm->modname, 'coursename' => $pcm->cname];
+                  $preloadedactivities[] = ['cmid' => (int)$pcm->cmid, 'name' => $pname, 'type' => $pcm->modname, 'coursename' => $pcm->cname];
               }
           }
       }
   }
   ?>
   <div id="hs_activity_section"
-       style="display:<?php echo ($sel_trigger === 'activity_completed' && $sel_scope === 'course') ? 'block' : 'none'; ?>;
+       style="display:<?php echo ($seltrigger === 'activity_completed' && $selscope === 'course') ? 'block' : 'none'; ?>;
               margin-top:16px;">
     <div style="font-size:12px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">
       <?php echo get_string('condition_activity','local_aynurasurveys'); ?>
     </div>
     <select name="condition_cmid" id="hs_activity_select" class="hs-courses-select" size="6">
-      <?php if (empty($preloaded_activities)): ?>
+      <?php if (empty($preloadedactivities)): ?>
         <option value="0"><?php echo get_string('condition_activity_select_course','local_aynurasurveys'); ?></option>
       <?php else: ?>
         <option value="0">— <?php echo get_string('choosedots'); ?></option>
         <?php
-        $cur_course = '';
-        foreach ($preloaded_activities as $pa):
-            if ($pa['coursename'] !== $cur_course):
-                if ($cur_course !== '') echo '</optgroup>';
+        $curcourse = '';
+        foreach ($preloadedactivities as $pa):
+            if ($pa['coursename'] !== $curcourse):
+                if ($curcourse !== '') echo '</optgroup>';
                 echo '<optgroup label="' . s($pa['coursename']) . '">';
-                $cur_course = $pa['coursename'];
+                $curcourse = $pa['coursename'];
             endif;
         ?>
           <option value="<?php echo $pa['cmid']; ?>"
-            <?php echo ($pa['cmid'] === $sel_cmid) ? 'selected' : ''; ?>>
+            <?php echo ($pa['cmid'] === $selcmid) ? 'selected' : ''; ?>>
             [<?php echo s($pa['type']); ?>] <?php echo s($pa['name']); ?>
           </option>
         <?php endforeach; ?>
-        <?php if ($cur_course) echo '</optgroup>'; ?>
+        <?php if ($curcourse) echo '</optgroup>'; ?>
       <?php endif; ?>
     </select>
     <div style="font-size:11px;color:#9CA3AF;margin-top:6px;">
       <?php echo get_string('condition_activity_help','local_aynurasurveys'); ?>
     </div>
     <input type="hidden" name="condition_cmid_val" id="hs_cmid_hidden"
-           value="<?php echo (int)$sel_cmid; ?>">
+           value="<?php echo (int)$selcmid; ?>">
     <!-- Debug panel -->
     <div id="hs_activity_debug" style="margin-top:8px;font-size:11px;font-family:monospace;
          background:#f8f9fa;border:1px solid #e5e7eb;border-radius:6px;padding:8px;display:none;"></div>
@@ -476,13 +500,13 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
 
   <!-- Global completion warning -->
   <div id="hs_global_completion_warning" class="hs-alert-warning"
-       style="display:<?php echo ($sel_scope === 'global' && $needs_completion) ? 'block' : 'none'; ?>">
+       style="display:<?php echo ($selscope === 'global' && $needscompletion) ? 'block' : 'none'; ?>">
     ⚠ <?php echo get_string('completion_warning_global','local_aynurasurveys'); ?>
   </div>
 
   <!-- Conflict panel -->
   <div id="hs_conflict_panel"
-       style="display:<?php echo ($sel_scope === 'global' && $sel_ctx === 'site') ? 'block' : 'none'; ?>">
+       style="display:<?php echo ($selscope === 'global' && $selctx === 'site') ? 'block' : 'none'; ?>">
     <div class="hs-conflict-panel">
       <div style="font-size:12px;font-weight:600;color:#92400E;margin-bottom:8px;">
         ⚠ <?php echo get_string('conflict_panel_title','local_aynurasurveys'); ?>
@@ -507,22 +531,22 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
     </div>
     <div class="hs-toggle">
       <input type="checkbox" id="hs_use_dates" name="use_dates" value="1"
-             <?php echo $use_dates ? 'checked' : ''; ?>>
+             <?php echo $usedates ? 'checked' : ''; ?>>
       <span class="hs-toggle-slider"></span>
     </div>
   </label>
 
-  <div id="hs_dates_row" style="display:<?php echo $use_dates ? 'grid' : 'none'; ?>;
+  <div id="hs_dates_row" style="display:<?php echo $usedates ? 'grid' : 'none'; ?>;
        grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px;">
     <div class="hs-field" style="margin:0;">
       <label for="hs_valid_from"><?php echo get_string('valid_from','local_aynurasurveys'); ?></label>
       <input type="date" name="valid_from" id="hs_valid_from"
-             value="<?php echo s($sel_from); ?>">
+             value="<?php echo s($selfrom); ?>">
     </div>
     <div class="hs-field" style="margin:0;">
       <label for="hs_valid_until"><?php echo get_string('valid_until','local_aynurasurveys'); ?></label>
       <input type="date" name="valid_until" id="hs_valid_until"
-             value="<?php echo s($sel_until); ?>">
+             value="<?php echo s($seluntil); ?>">
     </div>
   </div>
 
@@ -534,28 +558,28 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
     </div>
     <div class="hs-toggle">
       <input type="checkbox" id="hs_use_delay" name="use_delay" value="1"
-             <?php echo $use_delay ? 'checked' : ''; ?>>
+             <?php echo $usedelay ? 'checked' : ''; ?>>
       <span class="hs-toggle-slider"></span>
     </div>
   </label>
 
-  <div id="hs_delay_row" style="display:<?php echo $use_delay ? 'block' : 'none'; ?>">
+  <div id="hs_delay_row" style="display:<?php echo $usedelay ? 'block' : 'none'; ?>">
     <div class="hs-input-group">
       <div class="hs-field">
         <label><?php echo get_string('delay_value','local_aynurasurveys'); ?></label>
         <input type="number" name="delay_value" id="hs_delay_value"
-               min="1" value="<?php echo $delay_display; ?>">
+               min="1" value="<?php echo $delaydisplay; ?>">
       </div>
       <div class="hs-field">
         <label><?php echo get_string('delay_unit','local_aynurasurveys'); ?></label>
         <select name="delay_unit" id="hs_delay_unit">
-          <option value="minutes" <?php echo ($delay_unit === 'minutes') ? 'selected' : ''; ?>>
+          <option value="minutes" <?php echo ($delayunit === 'minutes') ? 'selected' : ''; ?>>
             <?php echo get_string('delay_unit_minutes','local_aynurasurveys'); ?>
           </option>
-          <option value="hours" <?php echo ($delay_unit === 'hours') ? 'selected' : ''; ?>>
+          <option value="hours" <?php echo ($delayunit === 'hours') ? 'selected' : ''; ?>>
             <?php echo get_string('delay_unit_hours','local_aynurasurveys'); ?>
           </option>
-          <option value="days" <?php echo ($delay_unit === 'days') ? 'selected' : ''; ?>>
+          <option value="days" <?php echo ($delayunit === 'days') ? 'selected' : ''; ?>>
             <?php echo get_string('delay_unit_days','local_aynurasurveys'); ?>
           </option>
         </select>
@@ -575,14 +599,14 @@ $cond_triggers_days = ['login_after_inactivity','days_after_enrollment','days_af
     </div>
     <div class="hs-toggle">
       <input type="checkbox" id="hs_enabled" name="enabled" value="1"
-             <?php echo $sel_enabled ? 'checked' : ''; ?>>
+             <?php echo $selenabled ? 'checked' : ''; ?>>
       <span class="hs-toggle-slider"></span>
     </div>
   </label>
 </div>
 
 <!-- Hidden fields -->
-<input type="hidden" name="delay_minutes" id="hs_delay_minutes_hidden" value="<?php echo $stored_delay; ?>">
+<input type="hidden" name="delay_minutes" id="hs_delay_minutes_hidden" value="<?php echo $storeddelay; ?>">
 
 <!-- Actions -->
 <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">

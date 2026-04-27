@@ -165,20 +165,20 @@ class api {
 
         return [
             // Required fields matching POST /surveys/:id/responses spec.
-            'respondent_name'  => trim($user->firstname . ' ' . $user->lastname),
+            'respondent_name' => trim($user->firstname . ' ' . $user->lastname),
             'respondent_email' => $user->email,
-            'moodle_user_id'   => (string) $user->id,
+            'moodle_user_id' => (string) $user->id,
             'moodle_course_id' => $courseid ? (string) $courseid : null,
-            'language'         => $user->lang ?? 'en',
-            'source'           => 'moodle',
+            'language' => $user->lang ?? 'en',
+            'source' => 'moodle',
             // Empty answers array — trigger registration only.
             // User fills in answers via the survey link sent by Aynura.Surveys.
-            'answers'          => [],
+            'answers' => [],
             // Extra context passed as metadata for Aynura.Surveys analytics.
-            'metadata'         => [
-                'trigger'     => $trigger,
-                'timestamp'   => date('c'),
-                'coursename'  => $context['coursename'] ?? null,
+            'metadata' => [
+                'trigger' => $trigger,
+                'timestamp' => date('c'),
+                'coursename' => $context['coursename'] ?? null,
             ],
         ];
     }

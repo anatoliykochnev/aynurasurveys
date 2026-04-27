@@ -58,10 +58,10 @@ class provider implements
         $collection->add_database_table(
             'local_aynurasurveys_log',
             [
-                'userid'      => 'privacy:metadata:local_aynurasurveys_log:userid',
-                'surveyid'    => 'privacy:metadata:local_aynurasurveys_log:surveyid',
-                'trigger'     => 'privacy:metadata:local_aynurasurveys_log:trigger',
-                'status'      => 'privacy:metadata:local_aynurasurveys_log:status',
+                'userid' => 'privacy:metadata:local_aynurasurveys_log:userid',
+                'surveyid' => 'privacy:metadata:local_aynurasurveys_log:surveyid',
+                'trigger' => 'privacy:metadata:local_aynurasurveys_log:trigger',
+                'status' => 'privacy:metadata:local_aynurasurveys_log:status',
                 'timecreated' => 'privacy:metadata:local_aynurasurveys_log:timecreated',
             ],
             'privacy:metadata:local_aynurasurveys_log'
@@ -114,9 +114,9 @@ class provider implements
 
             $data = array_values(array_map(function($log) {
                 return [
-                    'surveyid'    => $log->surveyid,
-                    'trigger'     => $log->trigger,
-                    'status'      => $log->status,
+                    'surveyid' => $log->surveyid,
+                    'trigger' => $log->trigger,
+                    'status' => $log->status,
                     'timecreated' => \core_privacy\local\request\transform::datetime($log->timecreated),
                 ];
             }, $logs));

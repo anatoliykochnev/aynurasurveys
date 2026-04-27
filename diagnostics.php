@@ -1,10 +1,42 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * API diagnostics page for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * API diagnostics page for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * API Diagnostics page for local_aynurasurveys.
@@ -29,7 +61,7 @@ $apikey  = (string) get_config('local_aynurasurveys', 'apikey');
 
 echo $OUTPUT->header();
 
-$current_page = 'diagnostics';
+$currentpage = 'diagnostics';
 require_once(__DIR__ . '/templates/nav.php');
 
 echo '<div class="hs-card">';
@@ -65,16 +97,16 @@ function run_test(string $label, string $url, string $apikey): void {
     $status = (int) ($info['http_code'] ?? 0);
     $errno  = $curl->get_errno();
 
-    $status_class = ($status >= 200 && $status < 300) ? 'success' : 'danger';
-    $status_badge = html_writer::span(
+    $statusclass = ($status >= 200 && $status < 300) ? 'success' : 'danger';
+    $statusbadge = html_writer::span(
         $status ?: 'cURL error',
-        "badge badge-{$status_class}"
+        "badge badge-{$statusclass}"
     );
 
     echo html_writer::start_tag('div', ['class' => 'card mb-3']);
     echo html_writer::start_tag('div', ['class' => 'card-header d-flex justify-content-between align-items-center']);
     echo html_writer::tag('strong', s($label));
-    echo html_writer::span("{$status_badge} &nbsp; {$ms}ms");
+    echo html_writer::span("{$statusbadge} &nbsp; {$ms}ms");
     echo html_writer::end_tag('div');
 
     echo html_writer::start_tag('div', ['class' => 'card-body']);
@@ -119,7 +151,7 @@ function run_test(string $label, string $url, string $apikey): void {
             $first = $decoded['surveys'][0];
             echo html_writer::tag('p', 'First survey keys: ' . html_writer::tag('code', implode(', ', array_keys($first))));
         }
-    } elseif ($decoded !== null && is_array($decoded) && !isset($decoded['surveys'])) {
+    } else if ($decoded !== null && is_array($decoded) && !isset($decoded['surveys'])) {
         echo html_writer::tag('p',
             html_writer::tag('strong', '⚠ Response is an array/object but has no "surveys" key. Top-level keys: ')
             . html_writer::tag('code', implode(', ', array_keys($decoded))),

@@ -1,10 +1,42 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * AJAX conflict and completion check handler.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * AJAX conflict and completion check handler.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Conflict check AJAX endpoint for local_aynurasurveys rule form.
@@ -37,7 +69,7 @@ $action = required_param('action', PARAM_ALPHANUMEXT);
 // Action: conflict_check
 // ------------------------------------------------------------------
 if ($action === 'conflict_check') {
-    $trigger    = required_param('trigger',         PARAM_ALPHANUMEXT);
+    $trigger    = required_param('trigger', PARAM_ALPHANUMEXT);
     $excludeid  = optional_param('exclude_rule_id', 0, PARAM_INT);
 
     $today = mktime(0, 0, 0);
@@ -59,18 +91,18 @@ if ($action === 'conflict_check') {
     foreach ($conflicts as $c) {
         $valid = '—';
         if ($c->valid_from || $c->valid_until) {
-            $from  = $c->valid_from  ? userdate($c->valid_from,  get_string('strftimedate', 'core_langconfig')) : '...';
+            $from  = $c->valid_from  ? userdate($c->valid_from, get_string('strftimedate', 'core_langconfig')) : '...';
             $until = $c->valid_until ? userdate($c->valid_until, get_string('strftimedate', 'core_langconfig')) : '...';
             $valid = "{$from} – {$until}";
         }
         $rows[] = [
             'survey' => $c->surveyname ?: $c->surveyid,
-            'valid'  => $valid,
+            'valid' => $valid,
         ];
     }
 
     echo json_encode([
-        'count'     => count($rows),
+        'count' => count($rows),
         'conflicts' => $rows,
     ]);
     exit;
@@ -80,8 +112,8 @@ if ($action === 'conflict_check') {
 // Action: completion_check
 // ------------------------------------------------------------------
 if ($action === 'completion_check') {
-    $courseids_raw = required_param('courseids', PARAM_RAW);
-    $courseids     = array_filter(array_map('intval', explode(',', $courseids_raw)));
+    $courseidsraw = required_param('courseids', PARAM_RAW);
+    $courseids     = array_filter(array_map('intval', explode(',', $courseidsraw)));
 
     if (empty($courseids)) {
         echo json_encode(['warnings' => []]);
@@ -94,7 +126,7 @@ if ($action === 'completion_check') {
         if (!$course) continue;
         if (empty($course->enablecompletion)) {
             $warnings[] = [
-                'courseid'   => $cid,
+                'courseid' => $cid,
                 'coursename' => $course->fullname,
             ];
         }
@@ -109,8 +141,8 @@ if ($action === 'completion_check') {
 //         for given course IDs, grouped by course.
 // ------------------------------------------------------------------
 if ($action === 'get_activities') {
-    $courseids_raw = required_param('courseids', PARAM_RAW);
-    $courseids     = array_filter(array_map('intval', explode(',', $courseids_raw)));
+    $courseidsraw = required_param('courseids', PARAM_RAW);
+    $courseids     = array_filter(array_map('intval', explode(',', $courseidsraw)));
 
     if (empty($courseids)) {
         echo json_encode(['activities' => []]);
@@ -140,11 +172,11 @@ if ($action === 'get_activities') {
             if (!$name) continue;
 
             $activities[] = [
-                'cmid'       => (int) $cm->cmid,
-                'name'       => $name,
-                'type'       => $cm->modname,
+                'cmid' => (int) $cm->cmid,
+                'name' => $name,
+                'type' => $cm->modname,
                 'coursename' => $cm->coursename,
-                'courseid'   => $cid,
+                'courseid' => $cid,
             ];
         }
     }
@@ -153,11 +185,11 @@ if ($action === 'get_activities') {
     $debug = [];
     if (empty($activities)) {
         foreach ($courseids as $cid) {
-            $total_cms = $DB->count_records('course_modules', ['course' => $cid]);
-            $completion_cms = $DB->count_records_select('course_modules',
+            $totalcms = $DB->count_records('course_modules', ['course' => $cid]);
+            $completioncms = $DB->count_records_select('course_modules',
                 'course = :cid AND completion > 0 AND deletioninprogress = 0',
                 ['cid' => $cid]);
-            $debug[] = "Course {$cid}: {$total_cms} total modules, {$completion_cms} with completion enabled";
+            $debug[] = "Course {$cid}: {$totalcms} total modules, {$completioncms} with completion enabled";
         }
     }
 

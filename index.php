@@ -1,10 +1,42 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Overview dashboard for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Overview dashboard for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Overview dashboard for local_aynurasurveys.
@@ -26,28 +58,28 @@ $PAGE->set_url(new moodle_url('/local/aynurasurveys/index.php'));
 // ------------------------------------------------------------------
 // Gather stats
 // ------------------------------------------------------------------
-$active_rules   = $DB->count_records('local_aynurasurveys_rules', ['enabled' => 1]);
-$archived_rules = $DB->count_records('local_aynurasurveys_rules', ['enabled' => 0]);
-$total_dispatch = $DB->count_records_select('local_aynurasurveys_log', "status != 'info' AND response != 'pending_modal_created'");
-$success_count  = $DB->count_records_select('local_aynurasurveys_log', "status = 'success' AND response != 'pending_modal_created'");
-$pending_count  = $DB->count_records('local_aynurasurveys_pending', ['status' => 'pending']);
+$activerules   = $DB->count_records('local_aynurasurveys_rules', ['enabled' => 1]);
+$archivedrules = $DB->count_records('local_aynurasurveys_rules', ['enabled' => 0]);
+$totaldispatch = $DB->count_records_select('local_aynurasurveys_log', "status != 'info' AND response != 'pending_modal_created'");
+$successcount  = $DB->count_records_select('local_aynurasurveys_log', "status = 'success' AND response != 'pending_modal_created'");
+$pendingcount  = $DB->count_records('local_aynurasurveys_pending', ['status' => 'pending']);
 $dismissed      = $DB->count_records('local_aynurasurveys_pending', ['status' => 'dismissed']);
 $completed      = $DB->count_records('local_aynurasurveys_pending', ['status' => 'completed']);
 
-$success_rate = $total_dispatch > 0 ? round(($success_count / $total_dispatch) * 100) : 0;
+$successrate = $totaldispatch > 0 ? round(($successcount / $totaldispatch) * 100) : 0;
 
 // Last dispatch time.
-$last_log = $DB->get_record_select(
+$lastlog = $DB->get_record_select(
     'local_aynurasurveys_log',
     "status = 'success'",
     [],
     '*',
     IGNORE_MULTIPLE
 );
-$last_dispatch = $last_log ? userdate($last_log->timecreated, get_string('strftimedatetimeshort', 'core_langconfig')) : 'Never';
+$lastdispatch = $lastlog ? userdate($lastlog->timecreated, get_string('strftimedatetimeshort', 'core_langconfig')) : 'Never';
 
 // Recent deliveries (last 8).
-$recent_logs = $DB->get_records_sql(
+$recentlogs = $DB->get_records_sql(
     "SELECT l.id, l.ruleid, l.userid, l.surveyid, l.trigger, l.status, l.timecreated,
             u.firstname, u.lastname
        FROM {local_aynurasurveys_log} l
@@ -59,15 +91,15 @@ $recent_logs = $DB->get_records_sql(
 );
 
 // Connection status.
-$conn_ok = false;
-$conn_msg = 'Not configured';
+$connok = false;
+$connmsg = 'Not configured';
 try {
     $apiclient = new api();
     $ping      = $apiclient->ping();
-    $conn_ok   = $ping['success'];
-    $conn_msg  = $conn_ok ? 'Connected' : 'Connection failed';
+    $connok   = $ping['success'];
+    $connmsg  = $connok ? 'Connected' : 'Connection failed';
 } catch (\Exception $e) {
-    $conn_msg = 'Not configured';
+    $connmsg = 'Not configured';
 }
 
 // ------------------------------------------------------------------
@@ -75,19 +107,19 @@ try {
 // ------------------------------------------------------------------
 echo $OUTPUT->header();
 
-$current_page = 'overview';
+$currentpage = 'overview';
 require_once(__DIR__ . '/templates/nav.php');
 
 // KPI row
 $kpis = [
-    ['label' => 'Connection',    'value' => $conn_ok ? '✓' : '✗',
-     'sub' => $conn_msg,
-     'color' => $conn_ok ? '#16a34a' : '#dc2626'],
-    ['label' => 'Active Rules',  'value' => $active_rules,   'sub' => $archived_rules . ' archived'],
-    ['label' => 'Total Dispatched','value'=> $total_dispatch, 'sub' => 'all time'],
-    ['label' => 'Success Rate',  'value' => $success_rate . '%', 'sub' => $success_count . ' successful'],
-    ['label' => 'Pending',       'value' => $pending_count,  'sub' => 'awaiting display'],
-    ['label' => 'Completed',     'value' => $completed,      'sub' => $dismissed . ' dismissed'],
+    ['label' => 'Connection', 'value' => $connok ? '✓' : '✗',
+     'sub' => $connmsg,
+     'color' => $connok ? '#16a34a' : '#dc2626'],
+    ['label' => 'Active Rules', 'value' => $activerules, 'sub' => $archivedrules . ' archived'],
+    ['label' => 'Total Dispatched','value'=> $totaldispatch, 'sub' => 'all time'],
+    ['label' => 'Success Rate', 'value' => $successrate . '%', 'sub' => $successcount . ' successful'],
+    ['label' => 'Pending', 'value' => $pendingcount, 'sub' => 'awaiting display'],
+    ['label' => 'Completed', 'value' => $completed, 'sub' => $dismissed . ' dismissed'],
 ];
 ?>
 
@@ -113,7 +145,7 @@ $kpis = [
       <a href="<?php echo (new moodle_url('/local/aynurasurveys/log.php'))->out(false); ?>"
          class="hs-btn hs-btn-secondary hs-btn-sm">View all</a>
     </div>
-    <?php if (empty($recent_logs)): ?>
+    <?php if (empty($recentlogs)): ?>
       <p style="color:#9CA3AF;font-size:13px;margin:0;">No deliveries yet.</p>
     <?php else: ?>
       <table class="hs-table">
@@ -126,19 +158,19 @@ $kpis = [
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($recent_logs as $log):
+          <?php foreach ($recentlogs as $log):
             $name = trim($log->firstname . ' ' . $log->lastname) ?: 'User #' . $log->userid;
-            $status_class = $log->status === 'success' ? 'hs-badge-green' : ($log->status === 'dismissed' ? 'hs-badge-amber' : 'hs-badge-red');
-            $rule_label = !empty($log->ruleid) ? $DB->get_field('local_aynurasurveys_rules', 'rulename', ['id' => $log->ruleid]) : null;
-            if (!$rule_label) $rule_label = get_string('trigger_' . $log->trigger, 'local_aynurasurveys');
+            $statusclass = $log->status === 'success' ? 'hs-badge-green' : ($log->status === 'dismissed' ? 'hs-badge-amber' : 'hs-badge-red');
+            $rulelabel = !empty($log->ruleid) ? $DB->get_field('local_aynurasurveys_rules', 'rulename', ['id' => $log->ruleid]) : null;
+            if (!$rulelabel) $rulelabel = get_string('trigger_' . $log->trigger, 'local_aynurasurveys');
           ?>
           <tr>
             <td style="font-weight:500;"><?php echo s($name); ?></td>
             <td>
-              <div style="font-weight:500;color:#1A1A2E;"><?php echo s($rule_label); ?></div>
+              <div style="font-weight:500;color:#1A1A2E;"><?php echo s($rulelabel); ?></div>
               <div style="font-size:11px;color:#9CA3AF;"><?php echo get_string('trigger_' . $log->trigger, 'local_aynurasurveys'); ?></div>
             </td>
-            <td><span class="hs-badge <?php echo s($status_class); ?>"><?php echo ucfirst($log->status); ?></span></td>
+            <td><span class="hs-badge <?php echo s($statusclass); ?>"><?php echo ucfirst($log->status); ?></span></td>
             <td style="color:#9CA3AF;font-size:12px;"><?php echo userdate($log->timecreated, '%d %b %H:%M'); ?></td>
           </tr>
           <?php endforeach; ?>
@@ -170,7 +202,7 @@ $kpis = [
           <?php foreach ($rules as $rule):
             if (!empty($rule->valid_from) && $today < (int)$rule->valid_from) {
                 $badge = '<span class="hs-badge hs-badge-blue">Scheduled</span>';
-            } elseif (!empty($rule->valid_until) && $today > ((int)$rule->valid_until + 86399)) {
+            } else if (!empty($rule->valid_until) && $today > ((int)$rule->valid_until + 86399)) {
                 $badge = '<span class="hs-badge hs-badge-red">Expired</span>';
             } else {
                 $badge = '<span class="hs-badge hs-badge-green">Active</span>';
@@ -189,10 +221,10 @@ $kpis = [
           <?php endforeach; ?>
         </tbody>
       </table>
-      <?php if ($active_rules > 8): ?>
+      <?php if ($activerules > 8): ?>
         <a href="<?php echo (new moodle_url('/local/aynurasurveys/rules.php'))->out(false); ?>"
            style="display:block;text-align:center;margin-top:12px;font-size:12px;color:#6C6FF5;">
-          View all <?php echo (int)$active_rules; ?> rules →
+          View all <?php echo (int)$activerules; ?> rules →
         </a>
       <?php endif; ?>
     <?php endif; ?>

@@ -1,10 +1,42 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Trigger rule management for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Trigger rule management for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Trigger rules management page for local_aynurasurveys.
@@ -54,27 +86,27 @@ if ($action === 'reactivate' && $ruleid) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($action, ['add', 'edit'])) {
     require_sesskey();
 
-    $rulename        = optional_param('rulename',        '', PARAM_TEXT);
-    $trigger         = required_param('trigger',         PARAM_ALPHANUMEXT);
-    $surveyid        = required_param('surveyid',        PARAM_RAW);
-    $scope           = required_param('scope',           PARAM_ALPHA);
-    $display_context = required_param('display_context', PARAM_ALPHA);
+    $rulename        = optional_param('rulename', '', PARAM_TEXT);
+    $trigger         = required_param('trigger', PARAM_ALPHANUMEXT);
+    $surveyid        = required_param('surveyid', PARAM_RAW);
+    $scope           = required_param('scope', PARAM_ALPHA);
+    $displaycontext = required_param('display_context', PARAM_ALPHA);
     $courseids       = optional_param_array('courseids', [], PARAM_INT);
     $enabled         = optional_param('enabled', 0, PARAM_INT);
-    $use_dates       = optional_param('use_dates', 0, PARAM_INT);
-    $valid_from_str  = optional_param('valid_from',  '', PARAM_RAW);
-    $valid_until_str = optional_param('valid_until', '', PARAM_RAW);
-    $delay_minutes   = optional_param('delay_minutes', 0, PARAM_INT);
+    $usedates       = optional_param('use_dates', 0, PARAM_INT);
+    $validfromstr  = optional_param('valid_from', '', PARAM_RAW);
+    $validuntilstr = optional_param('valid_until', '', PARAM_RAW);
+    $delayminutes   = optional_param('delay_minutes', 0, PARAM_INT);
 
     if (trigger_manager::is_login_trigger($trigger)) {
-        $display_context = 'site';
+        $displaycontext = 'site';
         $scope           = 'global';
     }
 
-    $valid_from = $valid_until = null;
-    if ($use_dates) {
-        if ($valid_from_str)  $valid_from  = strtotime($valid_from_str  . ' 00:00:00');
-        if ($valid_until_str) $valid_until = strtotime($valid_until_str . ' 00:00:00');
+    $validfrom = $validuntil = null;
+    if ($usedates) {
+        if ($validfromstr)  $validfrom  = strtotime($validfromstr  . ' 00:00:00');
+        if ($validuntilstr) $validuntil = strtotime($validuntilstr . ' 00:00:00');
     }
 
     $conditions = [];
@@ -118,7 +150,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($action, ['add', 'edit']))
         foreach ($surveys as $s) {
             if ($s['id'] === $surveyid) { $surveyname = $s['title'] ?? $surveyid; break; }
         }
-    } catch (\Exception $e) {}
+    } catch (\Exception $e) {
+            // Catch silently — non-fatal error.
+        }
 
     if ($action === 'edit' && $ruleid) {
         $rule = $DB->get_record('local_aynurasurveys_rules', ['id' => $ruleid], '*', MUST_EXIST);
@@ -127,30 +161,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($action, ['add', 'edit']))
         $rule->surveyid        = $surveyid;
         $rule->surveyname      = $surveyname;
         $rule->scope           = $scope;
-        $rule->display_context = $display_context;
+        $rule->display_context = $displaycontext;
         $rule->conditions      = json_encode($conditions);
-        $rule->valid_from      = $valid_from;
-        $rule->valid_until     = $valid_until;
-        $rule->delay_minutes   = $delay_minutes;
+        $rule->valid_from      = $validfrom;
+        $rule->valid_until     = $validuntil;
+        $rule->delay_minutes   = $delayminutes;
         $rule->enabled         = $enabled;
         $rule->timemodified    = time();
         $DB->update_record('local_aynurasurveys_rules', $rule);
     } else {
         $ruleid = $DB->insert_record('local_aynurasurveys_rules', (object) [
-            'rulename'        => $rulename,
-                'trigger'         => $trigger,
-            'surveyid'        => $surveyid,
-            'surveyname'      => $surveyname,
-            'scope'           => $scope,
-            'display_context' => $display_context,
-            'conditions'      => json_encode($conditions),
-            'valid_from'      => $valid_from,
-            'valid_until'     => $valid_until,
-            'delay_minutes'   => $delay_minutes,
-            'enabled'         => $enabled,
-            'timecreated'     => time(),
-            'timemodified'    => time(),
-            'createdby'       => $USER->id,
+            'rulename' => $rulename,
+                'trigger' => $trigger,
+            'surveyid' => $surveyid,
+            'surveyname' => $surveyname,
+            'scope' => $scope,
+            'display_context' => $displaycontext,
+            'conditions' => json_encode($conditions),
+            'valid_from' => $validfrom,
+            'valid_until' => $validuntil,
+            'delay_minutes' => $delayminutes,
+            'enabled' => $enabled,
+            'timecreated' => time(),
+            'timemodified' => time(),
+            'createdby' => $USER->id,
         ]);
     }
 
@@ -170,47 +204,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($action, ['add', 'edit']))
 // Prepare form data (for add / edit rendering)
 // ------------------------------------------------------------------
 $rule                = null;
-$existing_courseids  = [];
-$existing_conditions = [];
+$existingcourseids  = [];
+$existingconditions = [];
 
 if ($action === 'add') {
     // Empty defaults — rule stays null.
-} elseif ($action === 'edit' && $ruleid) {
+} else if ($action === 'edit' && $ruleid) {
     $rule                = $DB->get_record('local_aynurasurveys_rules', ['id' => $ruleid], '*', MUST_EXIST);
-    $existing_courseids  = $DB->get_fieldset_select('local_aynurasurveys_rule_courses', 'courseid', 'ruleid = ?', [$ruleid]);
-    $existing_conditions = json_decode($rule->conditions ?? '{}', true) ?? [];
+    $existingcourseids  = $DB->get_fieldset_select('local_aynurasurveys_rule_courses', 'courseid', 'ruleid = ?', [$ruleid]);
+    $existingconditions = json_decode($rule->conditions ?? '{}', true) ?? [];
 }
 
 // Fetch surveys for dropdown.
-$survey_options = ['' => get_string('choosedots')];
+$surveyoptions = ['' => get_string('choosedots')];
 try {
     $apiclient = new api();
     $surveys   = $apiclient->get_surveys(['status' => 'active']);
     foreach ($surveys as $s) {
-        $survey_options[$s['id']] = $s['title'] ?? $s['id'];
+        $surveyoptions[$s['id']] = $s['title'] ?? $s['id'];
     }
 } catch (\Exception $e) {
     \core\notification::warning(get_string('error_nosurveys', 'local_aynurasurveys'));
 }
 
 // Trigger options.
-$trigger_options = ['' => get_string('choosedots')];
+$triggeroptions = ['' => get_string('choosedots')];
 foreach (trigger_manager::get_all_triggers() as $t) {
-    $trigger_options[$t] = get_string('trigger_' . $t, 'local_aynurasurveys');
+    $triggeroptions[$t] = get_string('trigger_' . $t, 'local_aynurasurveys');
 }
 
 // Course options.
-$course_options = [];
+$courseoptions = [];
 $courses = $DB->get_records_select('course', 'id != :site', ['site' => SITEID], 'fullname ASC', 'id, fullname, shortname, enablecompletion');
 foreach ($courses as $c) {
-    $course_options[$c->id] = "{$c->fullname} ({$c->shortname})";
+    $courseoptions[$c->id] = "{$c->fullname} ({$c->shortname})";
 }
 
 $conflicturl = (new moodle_url('/local/aynurasurveys/conflict.php'))->out(false);
 $formaction  = new moodle_url($pageurl, [
-    'action'  => ($rule ? 'edit' : 'add'),
-    'id'      => $ruleid,
-    'tab'     => $tab,
+    'action' => ($rule ? 'edit' : 'add'),
+    'id' => $ruleid,
+    'tab' => $tab,
     'sesskey' => sesskey(),
 ]);
 
@@ -229,7 +263,7 @@ if ($tab === 'active') {
 // ------------------------------------------------------------------
 echo $OUTPUT->header();
 
-$current_page = 'rules';
+$currentpage = 'rules';
 require_once(__DIR__ . '/templates/nav.php');
 ?>
 
@@ -322,12 +356,12 @@ require_once(__DIR__ . '/templates/nav.php');
       <tbody>
         <?php
         $strdate = get_string('strftimedate', 'core_langconfig');
-        foreach ($rules as $rule_row):
+        foreach ($rules as $rulerow):
             // Status badge.
             if ($tab === 'active') {
-                if (!empty($rule_row->valid_from) && $today < (int)$rule_row->valid_from) {
+                if (!empty($rulerow->valid_from) && $today < (int)$rulerow->valid_from) {
                     $badge = '<span class="hs-badge hs-badge-blue">Scheduled</span>';
-                } elseif (!empty($rule_row->valid_until) && $today > ((int)$rule_row->valid_until + 86399)) {
+                } else if (!empty($rulerow->valid_until) && $today > ((int)$rulerow->valid_until + 86399)) {
                     $badge = '<span class="hs-badge hs-badge-red">Expired</span>';
                 } else {
                     $badge = '<span class="hs-badge hs-badge-green">Active</span>';
@@ -337,23 +371,23 @@ require_once(__DIR__ . '/templates/nav.php');
             }
 
             // Scope label.
-            if ($rule_row->scope === 'global') {
-                $scope_label = '🌐 All courses';
+            if ($rulerow->scope === 'global') {
+                $scopelabel = '🌐 All courses';
             } else {
-                $cids  = $DB->get_fieldset_select('local_aynurasurveys_rule_courses', 'courseid', 'ruleid = ?', [$rule_row->id]);
+                $cids  = $DB->get_fieldset_select('local_aynurasurveys_rule_courses', 'courseid', 'ruleid = ?', [$rulerow->id]);
                 $names = array_map(function($cid) use ($DB) {
                     return $DB->get_field('course', 'shortname', ['id' => $cid]) ?: $cid;
                 }, $cids);
-                $scope_label = implode(', ', $names) ?: '—';
+                $scopelabel = implode(', ', $names) ?: '—';
             }
 
             // Display context.
-            $ctx_label = ($rule_row->display_context === 'course') ? '📖 On course' : '🖥 On site';
+            $ctxlabel = ($rulerow->display_context === 'course') ? '📖 On course' : '🖥 On site';
 
             // Completion warning.
             $warn = '';
-            if (trigger_manager::requires_completion($rule_row->trigger) && $rule_row->scope === 'course') {
-                $cids = $DB->get_fieldset_select('local_aynurasurveys_rule_courses', 'courseid', 'ruleid = ?', [$rule_row->id]);
+            if (trigger_manager::requires_completion($rulerow->trigger) && $rulerow->scope === 'course') {
+                $cids = $DB->get_fieldset_select('local_aynurasurveys_rule_courses', 'courseid', 'ruleid = ?', [$rulerow->id]);
                 foreach ($cids as $cid) {
                     if (!$DB->get_field('course', 'enablecompletion', ['id' => $cid])) {
                         $warn = ' <span title="' . get_string('completion_warning', 'local_aynurasurveys') . '" style="color:#f59e0b;cursor:help;">⚠</span>';
@@ -363,37 +397,37 @@ require_once(__DIR__ . '/templates/nav.php');
             }
 
             // Dates.
-            $from_str  = $rule_row->valid_from  ? userdate($rule_row->valid_from,  $strdate) : '—';
-            $until_str = $rule_row->valid_until ? userdate($rule_row->valid_until, $strdate) : '—';
+            $fromstr  = $rulerow->valid_from  ? userdate($rulerow->valid_from, $strdate) : '—';
+            $untilstr = $rulerow->valid_until ? userdate($rulerow->valid_until, $strdate) : '—';
 
             // Action URLs.
-            $editurl = new moodle_url($pageurl, ['action' => 'edit', 'id' => $rule_row->id, 'tab' => $tab]);
+            $editurl = new moodle_url($pageurl, ['action' => 'edit', 'id' => $rulerow->id, 'tab' => $tab]);
             if ($tab === 'active') {
-                $actionurl = new moodle_url($pageurl, ['action' => 'archive',    'id' => $rule_row->id, 'tab' => $tab, 'sesskey' => sesskey()]);
+                $actionurl = new moodle_url($pageurl, ['action' => 'archive', 'id' => $rulerow->id, 'tab' => $tab, 'sesskey' => sesskey()]);
                 $actionlbl = get_string('rule_archive', 'local_aynurasurveys');
                 $actioncls = 'hs-btn hs-btn-secondary hs-btn-sm';
             } else {
-                $actionurl = new moodle_url($pageurl, ['action' => 'reactivate', 'id' => $rule_row->id, 'tab' => $tab, 'sesskey' => sesskey()]);
+                $actionurl = new moodle_url($pageurl, ['action' => 'reactivate', 'id' => $rulerow->id, 'tab' => $tab, 'sesskey' => sesskey()]);
                 $actionlbl = get_string('rule_reactivate', 'local_aynurasurveys');
                 $actioncls = 'hs-btn hs-btn-primary hs-btn-sm';
             }
         ?>
         <tr>
           <td style="font-weight:600;color:#1A1A2E;max-width:180px;">
-            <?php echo s($rule_row->rulename ?: '—'); ?>
+            <?php echo s($rulerow->rulename ?: '—'); ?>
           </td>
           <td><?php echo $badge; ?></td>
           <td style="font-weight:500;color:#1A1A2E;">
-            <?php echo get_string('trigger_' . $rule_row->trigger, 'local_aynurasurveys'); ?>
+            <?php echo get_string('trigger_' . $rulerow->trigger, 'local_aynurasurveys'); ?>
           </td>
           <td style="color:#6B7280;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-            <?php echo s($rule_row->surveyname ?: $rule_row->surveyid); ?><?php echo $warn; ?>
+            <?php echo s($rulerow->surveyname ?: $rulerow->surveyid); ?><?php echo $warn; ?>
           </td>
-          <td style="font-size:12px;color:#6B7280;"><?php echo s($scope_label); ?></td>
-          <td style="font-size:12px;color:#6B7280;"><?php echo $ctx_label; ?></td>
-          <td style="font-size:12px;color:#9CA3AF;"><?php echo userdate($rule_row->timecreated, $strdate); ?></td>
-          <td style="font-size:12px;color:#9CA3AF;"><?php echo $from_str; ?></td>
-          <td style="font-size:12px;color:#9CA3AF;"><?php echo $until_str; ?></td>
+          <td style="font-size:12px;color:#6B7280;"><?php echo s($scopelabel); ?></td>
+          <td style="font-size:12px;color:#6B7280;"><?php echo $ctxlabel; ?></td>
+          <td style="font-size:12px;color:#9CA3AF;"><?php echo userdate($rulerow->timecreated, $strdate); ?></td>
+          <td style="font-size:12px;color:#9CA3AF;"><?php echo $fromstr; ?></td>
+          <td style="font-size:12px;color:#9CA3AF;"><?php echo $untilstr; ?></td>
           <td style="white-space:nowrap;">
             <a href="<?php echo $editurl->out(false); ?>"
                class="hs-btn hs-btn-secondary hs-btn-sm" style="margin-right:6px;">

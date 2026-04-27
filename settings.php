@@ -18,6 +18,14 @@
  * Admin settings registration for local_aynurasurveys.
  *
  * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+/**
+ * Admin settings registration for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
  * @copyright  2026 Sebale <info@sebale.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

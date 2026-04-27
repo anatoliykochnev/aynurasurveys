@@ -90,7 +90,7 @@ class observer {
             trigger_manager::TRIGGER_UNENROLLED,
             $user,
             $courseid, [
-                'coursename'      => $course->fullname ?? '',
+                'coursename' => $course->fullname ?? '',
                 'courseshortname' => $course->shortname ?? '',
             ]
         );
@@ -119,8 +119,8 @@ class observer {
         $already = $DB->record_exists_select(
             'local_aynurasurveys_log',
             'userid = :userid AND trigger = :trigger AND courseid = :courseid', [
-                'userid'   => $userid,
-                'trigger'  => trigger_manager::TRIGGER_COURSE_STARTED,
+                'userid' => $userid,
+                'trigger' => trigger_manager::TRIGGER_COURSE_STARTED,
                 'courseid' => $courseid,
             ]
         );
@@ -140,7 +140,7 @@ class observer {
             trigger_manager::TRIGGER_COURSE_STARTED,
             $user,
             $courseid, [
-                'coursename'      => $course->fullname,
+                'coursename' => $course->fullname,
                 'courseshortname' => $course->shortname,
             ]
         );
@@ -168,9 +168,9 @@ class observer {
             trigger_manager::TRIGGER_COURSE_COMPLETED,
             $user,
             $courseid, [
-                'coursename'      => $course->fullname,
+                'coursename' => $course->fullname,
                 'courseshortname' => $course->shortname,
-                'completed_at'    => date('c', time()),
+                'completed_at' => date('c', time()),
             ]
         );
     }
@@ -212,10 +212,10 @@ class observer {
         }
 
         $context = [
-            'coursename'      => $course->fullname  ?? '',
+            'coursename' => $course->fullname ?? '',
             'courseshortname' => $course->shortname ?? '',
-            'grade_percent'   => round($percentage, 2),
-            'item_name'       => $gradeitem->itemname ?? '',
+            'grade_percent' => round($percentage, 2),
+            'item_name' => $gradeitem->itemname ?? '',
         ];
 
         // --- grade_passed ---
@@ -306,10 +306,10 @@ class observer {
         }
 
         $context = [
-            'coursename'      => $course->fullname,
+            'coursename' => $course->fullname,
             'courseshortname' => $course->shortname,
-            'cmid'            => $cmid,
-            'activity_name'   => $activityname,
+            'cmid' => $cmid,
+            'activity_name' => $activityname,
         ];
 
         // Load enabled activity_completed rules.
@@ -383,10 +383,10 @@ class observer {
         }
 
         $context = [
-            'coursename'      => $course->fullname,
+            'coursename' => $course->fullname,
             'courseshortname' => $course->shortname,
-            'quiz_id'         => $quizid,
-            'grade_percent'   => round($percentage, 2),
+            'quiz_id' => $quizid,
+            'grade_percent' => round($percentage, 2),
         ];
 
         // Quiz_passed — check each rule's threshold.
@@ -426,20 +426,20 @@ class observer {
         // Log quiz completion for days_after_quiz cron trigger.
         // Store in a lightweight way using the existing log table with a special status.
         if (!$DB->record_exists('local_aynurasurveys_log', [
-            'userid'   => $userid,
-            'trigger'  => 'quiz_completion_recorded',
+            'userid' => $userid,
+            'trigger' => 'quiz_completion_recorded',
             'courseid' => $courseid,
             'surveyid' => (string) $quizid,
         ])) {
             $DB->insert_record('local_aynurasurveys_log', (object) [
-                'ruleid'      => 0,
-                'userid'      => $userid,
-                'surveyid'    => (string) $quizid,
-                'trigger'     => 'quiz_completion_recorded',
-                'courseid'    => $courseid,
-                'status'      => 'info',
-                'statuscode'  => null,
-                'response'    => json_encode(['grade_percent' => round($percentage, 2)]),
+                'ruleid' => 0,
+                'userid' => $userid,
+                'surveyid' => (string) $quizid,
+                'trigger' => 'quiz_completion_recorded',
+                'courseid' => $courseid,
+                'status' => 'info',
+                'statuscode' => null,
+                'response' => json_encode(['grade_percent' => round($percentage, 2)]),
                 'timecreated' => time(),
             ]);
         }

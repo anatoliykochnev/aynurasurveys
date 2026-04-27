@@ -185,7 +185,7 @@ class process_time_triggers extends \core\task\scheduled_task {
 
         $params = array_merge([
             'window_start' => $windowstart,
-            'window_end'   => $windowend,
+            'window_end' => $windowend,
         ], $coursefilter['params']);
 
         $enrollments = $DB->get_records_sql($sql, $params);
@@ -201,9 +201,9 @@ class process_time_triggers extends \core\task\scheduled_task {
                 $user,
                 (int) $enrollment->courseid,
                 [
-                    'coursename'      => $enrollment->fullname,
+                    'coursename' => $enrollment->fullname,
                     'courseshortname' => $enrollment->shortname,
-                    'days_after'      => $days,
+                    'days_after' => $days,
                 ]
             );
         }
@@ -266,10 +266,10 @@ class process_time_triggers extends \core\task\scheduled_task {
                 $user,
                 (int) $row->courseid,
                 [
-                    'coursename'      => $row->fullname,
+                    'coursename' => $row->fullname,
                     'courseshortname' => $row->shortname,
                     'percent_reached' => round($pct, 1),
-                    'target_percent'  => $targetpct,
+                    'target_percent' => $targetpct,
                 ]
             );
         }
@@ -307,10 +307,10 @@ class process_time_triggers extends \core\task\scheduled_task {
         $recurrence  = $conditions['recurrence'] ?? '';
 
         $shouldfire = match($recurrence) {
-            'daily'   => true,  // Task runs hourly — fire once per day using the log.
-            'weekly'  => (date('N', $now) === '1'), // Monday.
+            'daily' => true,  // Task runs hourly — fire once per day using the log.
+            'weekly' => (date('N', $now) === '1'), // Monday.
             'monthly' => (date('j', $now) === '1'), // 1st of month.
-            default   => false,
+            default => false,
         };
 
         if (!$shouldfire) {
@@ -503,9 +503,9 @@ class process_time_triggers extends \core\task\scheduled_task {
                 trigger_manager::TRIGGER_DAYS_AFTER_QUIZ,
                 $user, (int) $row->courseid,
                 [
-                    'coursename'      => $row->fullname,
+                    'coursename' => $row->fullname,
                     'courseshortname' => $row->shortname,
-                    'days_after'      => $days,
+                    'days_after' => $days,
                 ]
             );
         }
@@ -554,10 +554,10 @@ class process_time_triggers extends \core\task\scheduled_task {
             // For recurring triggers, check within the current period instead of all-time.
             if ($recurrence) {
                 $periodstart = match($recurrence) {
-                    'daily'   => strtotime('today midnight'),
-                    'weekly'  => strtotime('last Monday midnight'),
+                    'daily' => strtotime('today midnight'),
+                    'weekly' => strtotime('last Monday midnight'),
                     'monthly' => strtotime('first day of this month midnight'),
-                    default   => 0,
+                    default => 0,
                 };
 
                 if ($DB->record_exists_select(
@@ -574,7 +574,7 @@ class process_time_triggers extends \core\task\scheduled_task {
                 $user,
                 (int) $row->courseid,
                 array_merge($extracontext, [
-                    'coursename'      => $row->fullname,
+                    'coursename' => $row->fullname,
                     'courseshortname' => $row->shortname,
                 ])
             );

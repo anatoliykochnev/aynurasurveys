@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,7 +12,31 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Plugin hook callbacks for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Plugin hook callbacks for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Plugin hook callbacks for local_aynurasurveys.
@@ -76,7 +100,7 @@ function local_aynurasurveys_after_require_login() {
 
                 // login_after_inactivity: check each rule's threshold.
                 if ($user->lastaccess > 0) {
-                    $days_inactive = (int) floor(($now - $user->lastaccess) / DAYSECS);
+                    $daysinactive = (int) floor(($now - $user->lastaccess) / DAYSECS);
                     $rules = $DB->get_records('local_aynurasurveys_rules', [
                         'trigger' => \local_aynurasurveys\trigger_manager::TRIGGER_LOGIN_AFTER_INACTIVITY,
                         'enabled' => 1,
@@ -84,11 +108,11 @@ function local_aynurasurveys_after_require_login() {
                     foreach ($rules as $rule) {
                         $conditions = \local_aynurasurveys\trigger_manager::get_conditions($rule);
                         $threshold  = (int) ($conditions['days'] ?? 0);
-                        if ($threshold > 0 && $days_inactive >= $threshold) {
+                        if ($threshold > 0 && $daysinactive >= $threshold) {
                             \local_aynurasurveys\trigger_manager::fire(
                                 \local_aynurasurveys\trigger_manager::TRIGGER_LOGIN_AFTER_INACTIVITY,
                                 $user, null,
-                                ['days_inactive' => $days_inactive, 'login_time' => date('c', $now)]
+                                ['days_inactive' => $daysinactive, 'login_time' => date('c', $now)]
                             );
                             break;
                         }
@@ -108,24 +132,24 @@ function local_aynurasurveys_after_require_login() {
 
     // Determine current course context.
     // Guard against $PAGE->context not being set yet (fires early on some pages).
-    $current_courseid = null;
+    $currentcourseid = null;
     try {
         if ($PAGE->has_set_url() || !empty($PAGE->context)) {
             $ctx = $PAGE->context;
             if ($ctx instanceof \context_course) {
-                $current_courseid = $ctx->instanceid;
+                $currentcourseid = $ctx->instanceid;
             } else {
                 $coursecontext = $ctx->get_course_context(false);
                 if ($coursecontext) {
-                    $current_courseid = $coursecontext->instanceid;
+                    $currentcourseid = $coursecontext->instanceid;
                 }
             }
-            if ($current_courseid == SITEID) {
-                $current_courseid = null;
+            if ($currentcourseid == SITEID) {
+                $currentcourseid = null;
             }
         }
     } catch (\Exception $e) {
-        $current_courseid = null;
+        $currentcourseid = null;
     }
 
     // Find the oldest pending survey ready to show.
@@ -138,13 +162,13 @@ function local_aynurasurveys_after_require_login() {
 
     $pending = null;
     foreach ($pendings as $p) {
-        $display_context = $p->display_context ?? 'site';
-        if ($display_context === 'site') {
+        $displaycontext = $p->display_context ?? 'site';
+        if ($displaycontext === 'site') {
             $pending = $p;
             break;
         }
-        if ($display_context === 'course' && $current_courseid !== null
-                && (int) $p->courseid === (int) $current_courseid) {
+        if ($displaycontext === 'course' && $currentcourseid !== null
+                && (int) $p->courseid === (int) $currentcourseid) {
             $pending = $p;
             break;
         }
@@ -157,8 +181,8 @@ function local_aynurasurveys_after_require_login() {
     // Pass minimal bootstrap data — full survey data fetched via AJAX.
     $modaldata = [
         'pendingid' => (int) $pending->id,
-        'ajaxurl'   => (new \moodle_url('/local/aynurasurveys/ajax.php'))->out(false),
-        'sesskey'   => sesskey(),
+        'ajaxurl' => (new \moodle_url('/local/aynurasurveys/ajax.php'))->out(false),
+        'sesskey' => sesskey(),
     ];
 
     $PAGE->requires->js_call_amd('local_aynurasurveys/modal', 'init', [$modaldata]);

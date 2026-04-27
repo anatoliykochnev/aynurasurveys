@@ -3,18 +3,18 @@
  * Shared navigation component — Option C: prominent tab bar inside content area.
  *
  * Include AFTER $OUTPUT->header() on every plugin page.
- * Requires $current_page to be set before including.
+ * Requires $currentpage to be set before including.
  *
  * @package local_aynurasurveys
  */
 defined('MOODLE_INTERNAL') || die();
 
-$nav_items = [
-    'overview'    => ['label' => 'Overview',       'url' => '/local/aynurasurveys/index.php',       'icon' => '◈'],
-    'rules'       => ['label' => 'Trigger Rules',  'url' => '/local/aynurasurveys/rules.php',       'icon' => '⚡'],
-    'log'         => ['label' => 'Delivery Log',   'url' => '/local/aynurasurveys/log.php',         'icon' => '📋'],
+$navitems = [
+    'overview' => ['label' => 'Overview', 'url' => '/local/aynurasurveys/index.php', 'icon' => '◈'],
+    'rules' => ['label' => 'Trigger Rules', 'url' => '/local/aynurasurveys/rules.php', 'icon' => '⚡'],
+    'log' => ['label' => 'Delivery Log', 'url' => '/local/aynurasurveys/log.php', 'icon' => '📋'],
     'diagnostics' => ['label' => 'API Diagnostics','url' => '/local/aynurasurveys/diagnostics.php', 'icon' => '🔬'],
-    'settings'    => ['label' => 'Settings',       'url' => '/local/aynurasurveys/pluginsettings.php', 'icon' => '⚙'],
+    'settings' => ['label' => 'Settings', 'url' => '/local/aynurasurveys/pluginsettings.php', 'icon' => '⚙'],
 ];
 ?>
 <style>
@@ -192,9 +192,9 @@ $nav_items = [
 
     <!-- Tabs -->
     <nav class="hs-tabs">
-      <?php foreach ($nav_items as $key => $item): ?>
+      <?php foreach ($navitems as $key => $item): ?>
         <a href="<?php echo (new moodle_url($item['url']))->out(false); ?>"
-           class="hs-tab <?php echo ($current_page === $key) ? 'hs-tab-active' : ''; ?>">
+           class="hs-tab <?php echo ($currentpage === $key) ? 'hs-tab-active' : ''; ?>">
           <span class="hs-tab-icon"><?php echo $item['icon']; ?></span>
           <?php echo $item['label']; ?>
         </a>

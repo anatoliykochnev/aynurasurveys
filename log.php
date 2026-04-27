@@ -1,10 +1,42 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Delivery log viewer for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Delivery log viewer for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Delivery log viewer for local_aynurasurveys.
@@ -25,8 +57,8 @@ use local_aynurasurveys\trigger_manager;
 
 admin_externalpage_setup('local_aynurasurveys_log');
 
-$filter_status  = optional_param('status',  '', PARAM_ALPHA);
-$filter_trigger = optional_param('trigger', '', PARAM_ALPHANUMEXT);
+$filterstatus  = optional_param('status', '', PARAM_ALPHA);
+$filtertrigger = optional_param('trigger', '', PARAM_ALPHANUMEXT);
 $page           = optional_param('page', 0, PARAM_INT);
 $perpage        = 50;
 
@@ -39,13 +71,13 @@ $PAGE->set_url($pageurl);
 $where  = [];
 $params = [];
 
-if ($filter_status) {
+if ($filterstatus) {
     $where[]          = 'l.status = :status';
-    $params['status'] = $filter_status;
+    $params['status'] = $filterstatus;
 }
-if ($filter_trigger) {
+if ($filtertrigger) {
     $where[]           = 'l.trigger = :trigger';
-    $params['trigger'] = $filter_trigger;
+    $params['trigger'] = $filtertrigger;
 }
 
 $wheresql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
@@ -74,7 +106,7 @@ $logs = $DB->get_records_sql($sql, $params, $page * $perpage, $perpage);
 // ------------------------------------------------------------------
 echo $OUTPUT->header();
 
-$current_page = 'log';
+$currentpage = 'log';
 require_once(__DIR__ . '/templates/nav.php');
 
 echo '<div class="hs-card">';
@@ -89,10 +121,10 @@ echo '</div>';
     <label for="filter_status" class="mr-1"><?php echo get_string('log_status', 'local_aynurasurveys'); ?></label>
     <select name="status" id="filter_status" class="form-control form-control-sm">
       <option value=""><?php echo get_string('all'); ?></option>
-      <option value="success" <?php echo ($filter_status === 'success') ? 'selected' : ''; ?>>
+      <option value="success" <?php echo ($filterstatus === 'success') ? 'selected' : ''; ?>>
         <?php echo get_string('log_status_success', 'local_aynurasurveys'); ?>
       </option>
-      <option value="failed" <?php echo ($filter_status === 'failed') ? 'selected' : ''; ?>>
+      <option value="failed" <?php echo ($filterstatus === 'failed') ? 'selected' : ''; ?>>
         <?php echo get_string('log_status_failed', 'local_aynurasurveys'); ?>
       </option>
     </select>
@@ -102,7 +134,7 @@ echo '</div>';
     <select name="trigger" id="filter_trigger" class="form-control form-control-sm">
       <option value=""><?php echo get_string('all'); ?></option>
       <?php foreach (trigger_manager::get_all_triggers() as $t): ?>
-        <option value="<?php echo s($t); ?>" <?php echo ($filter_trigger === $t) ? 'selected' : ''; ?>>
+        <option value="<?php echo s($t); ?>" <?php echo ($filtertrigger === $t) ? 'selected' : ''; ?>>
           <?php echo get_string('trigger_' . $t, 'local_aynurasurveys'); ?>
         </option>
       <?php endforeach; ?>
@@ -120,27 +152,27 @@ if (empty($logs)) {
     $table->attributes = ['class' => 'hs-table'];
     $table->head       = [
         '#',
-        get_string('log_userid',      'local_aynurasurveys'),
-        get_string('log_surveyid',    'local_aynurasurveys'),
-        get_string('log_trigger',     'local_aynurasurveys'),
-        get_string('log_status',      'local_aynurasurveys'),
-        get_string('log_statuscode',  'local_aynurasurveys'),
+        get_string('log_userid', 'local_aynurasurveys'),
+        get_string('log_surveyid', 'local_aynurasurveys'),
+        get_string('log_trigger', 'local_aynurasurveys'),
+        get_string('log_status', 'local_aynurasurveys'),
+        get_string('log_statuscode', 'local_aynurasurveys'),
         get_string('log_timecreated', 'local_aynurasurveys'),
     ];
     $table->attributes = ['class' => 'generaltable w-100'];
 
     foreach ($logs as $log) {
         $username = trim("{$log->firstname} {$log->lastname}") ?: $log->userid;
-        $status_badge = $log->status === 'success'
+        $statusbadge = $log->status === 'success'
             ? html_writer::span(get_string('log_status_success', 'local_aynurasurveys'), 'badge badge-success')
-            : html_writer::span(get_string('log_status_failed',  'local_aynurasurveys'), 'badge badge-danger');
+            : html_writer::span(get_string('log_status_failed', 'local_aynurasurveys'), 'badge badge-danger');
 
         $table->data[] = [
             $log->id,
             html_writer::tag('small', s($username) . '<br>' . html_writer::tag('code', $log->email ?? '')),
             html_writer::tag('code', s($log->surveyid)),
             get_string('trigger_' . $log->trigger, 'local_aynurasurveys'),
-            $status_badge,
+            $statusbadge,
             $log->statuscode ?? '—',
             userdate($log->timecreated),
         ];
@@ -150,8 +182,8 @@ if (empty($logs)) {
 
     // Pagination.
     echo $OUTPUT->paging_bar($total, $page, $perpage, new moodle_url($pageurl, [
-        'status'  => $filter_status,
-        'trigger' => $filter_trigger,
+        'status' => $filterstatus,
+        'trigger' => $filtertrigger,
     ]));
 }
 

@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,7 +12,31 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Upgrade steps for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * Upgrade steps for local_aynurasurveys.
+ *
+ * @package    local_aynurasurveys
+ * @copyright  2026 Aynura.Surveys
+ * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Upgrade steps for local_aynurasurveys.
@@ -22,31 +46,36 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Upgrade the local_aynurasurveys plugin.
+ *
+ * @param int $oldversion The old plugin version.
+ * @return bool
+ */
 function xmldb_local_aynurasurveys_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2026041000) {
         $table = new xmldb_table('local_aynurasurveys_pending');
-        $table->add_field('id',           XMLDB_TYPE_INTEGER, '10',  null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
-        $table->add_field('userid',       XMLDB_TYPE_INTEGER, '10',  null, XMLDB_NOTNULL, null, null);
-        $table->add_field('ruleid',       XMLDB_TYPE_INTEGER, '10',  null, XMLDB_NOTNULL, null, null);
-        $table->add_field('surveyid',     XMLDB_TYPE_CHAR,    '128', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('surveyname',   XMLDB_TYPE_CHAR,    '255', null, null,           null, null);
-        $table->add_field('trigger',      XMLDB_TYPE_CHAR,    '64',  null, XMLDB_NOTNULL, null, null);
-        $table->add_field('courseid',     XMLDB_TYPE_INTEGER, '10',  null, null,           null, null);
-        $table->add_field('questions',    XMLDB_TYPE_TEXT,    null,  null, null,           null, null);
-        $table->add_field('language',     XMLDB_TYPE_CHAR,    '10',  null, XMLDB_NOTNULL, null, 'en');
-        $table->add_field('status',       XMLDB_TYPE_CHAR,    '16',  null, XMLDB_NOTNULL, null, 'pending');
-        $table->add_field('timecreated',  XMLDB_TYPE_INTEGER, '10',  null, XMLDB_NOTNULL, null, '0');
-        $table->add_field('timeresolved', XMLDB_TYPE_INTEGER, '10',  null, null,           null, null);
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('ruleid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('surveyid', XMLDB_TYPE_CHAR, '128', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('surveyname', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+        $table->add_field('trigger', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('questions', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('language', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, 'en');
+        $table->add_field('status', XMLDB_TYPE_CHAR, '16', null, XMLDB_NOTNULL, null, 'pending');
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('timeresolved', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
 
         $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
         $table->add_key('fk_user', XMLDB_KEY_FOREIGN, ['userid'], 'user',                   ['id']);
         $table->add_key('fk_rule', XMLDB_KEY_FOREIGN, ['ruleid'], 'local_aynurasurveys_rules', ['id']);
-        $table->add_index('idx_status',       XMLDB_INDEX_NOTUNIQUE, ['status']);
+        $table->add_index('idx_status', XMLDB_INDEX_NOTUNIQUE, ['status']);
         $table->add_index('idx_user_pending', XMLDB_INDEX_NOTUNIQUE, ['userid', 'status']);
 
         if (!$dbman->table_exists($table)) {
@@ -56,7 +85,6 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026041100) {
-
         // local_aynurasurveys_rules: add valid_from, valid_until, display_context.
         $rulestable = new xmldb_table('local_aynurasurveys_rules');
 
@@ -103,7 +131,6 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
 
     // 2026041300 — add delay_minutes to rules, show_after to pending.
     if ($oldversion < 2026041300) {
-
         // local_aynurasurveys_rules: add delay_minutes.
         $rulestable = new xmldb_table('local_aynurasurveys_rules');
         $f = new xmldb_field('delay_minutes', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'valid_until');
@@ -242,10 +269,10 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
         // For existing installs upgrading from local_hubsurveys, tables
         // are renamed in this step.
         $tables = [
-            'local_hubsurveys_rules'        => 'local_aynurasurveys_rules',
-            'local_hubsurveys_rule_courses'  => 'local_aynurasurveys_rule_courses',
-            'local_hubsurveys_log'           => 'local_aynurasurveys_log',
-            'local_hubsurveys_pending'       => 'local_aynurasurveys_pending',
+            'local_hubsurveys_rules' => 'local_aynurasurveys_rules',
+            'local_hubsurveys_rule_courses' => 'local_aynurasurveys_rule_courses',
+            'local_hubsurveys_log' => 'local_aynurasurveys_log',
+            'local_hubsurveys_pending' => 'local_aynurasurveys_pending',
         ];
         foreach ($tables as $old => $new) {
             $oldtable = new xmldb_table($old);
@@ -317,6 +344,15 @@ function xmldb_local_aynurasurveys_upgrade($oldversion) {
     }
     if ($oldversion < 2026042421) {
         upgrade_plugin_savepoint(true, 2026042421, 'local', 'aynurasurveys');
+    }
+    if ($oldversion < 2026042422) {
+        upgrade_plugin_savepoint(true, 2026042422, 'local', 'aynurasurveys');
+    }
+    if ($oldversion < 2026042423) {
+        upgrade_plugin_savepoint(true, 2026042423, 'local', 'aynurasurveys');
+    }
+    if ($oldversion < 2026042424) {
+        upgrade_plugin_savepoint(true, 2026042424, 'local', 'aynurasurveys');
     }
     return true;
 }
