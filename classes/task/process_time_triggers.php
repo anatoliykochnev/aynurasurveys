@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Scheduled task: process all time-based and percentage-based trigger rules.
@@ -107,7 +107,7 @@ class process_time_triggers extends \core\task\scheduled_task {
     }
 
     // -----------------------------------------------------------------------
-    // Rule dispatcher
+    // Rule dispatcher.
     // -----------------------------------------------------------------------
 
     /**
@@ -150,7 +150,7 @@ class process_time_triggers extends \core\task\scheduled_task {
     }
 
     // -----------------------------------------------------------------------
-    // Individual trigger processors
+    // Individual trigger processors.
     // -----------------------------------------------------------------------
 
     /**
@@ -363,7 +363,8 @@ class process_time_triggers extends \core\task\scheduled_task {
             }
             trigger_manager::fire(
                 trigger_manager::TRIGGER_DAYS_AFTER_START,
-                $user, (int) $row->courseid,
+                $user,
+                (int) $row->courseid,
                 ['coursename' => $row->fullname, 'courseshortname' => $row->shortname, 'days_after' => $days]
             );
         }
@@ -408,7 +409,8 @@ class process_time_triggers extends \core\task\scheduled_task {
             }
             trigger_manager::fire(
                 trigger_manager::TRIGGER_DAYS_BEFORE_END,
-                $user, (int) $row->courseid,
+                $user,
+                (int) $row->courseid,
                 ['coursename' => $row->fullname, 'courseshortname' => $row->shortname, 'days_before' => $days]
             );
         }
@@ -452,8 +454,8 @@ class process_time_triggers extends \core\task\scheduled_task {
             }
             trigger_manager::fire(
                 trigger_manager::TRIGGER_DAYS_AFTER_COMPLETION,
-            trigger_manager::TRIGGER_DAYS_AFTER_QUIZ,
-                $user, (int) $row->courseid,
+                $user,
+                (int) $row->courseid,
                 ['coursename' => $row->fullname, 'courseshortname' => $row->shortname, 'days_after' => $days]
             );
         }
@@ -511,7 +513,7 @@ class process_time_triggers extends \core\task\scheduled_task {
     }
 
     // -----------------------------------------------------------------------
-    // Shared helpers
+    // Shared helpers.
     // -----------------------------------------------------------------------
 
     /**

@@ -1,18 +1,18 @@
 <?php
 // This file is part of Moodle - https://moodle.org/
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Moodle is free software: you can redistribute it and/or modify.
+// It under the terms of the GNU General Public License as published by.
+// The Free Software Foundation, either version 3 of the License, or.
 // (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Moodle is distributed in the hope that it will be useful,.
+// But WITHOUT ANY WARRANTY; without even the implied warranty of.
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the.
 // GNU General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License.
+// Along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * API diagnostics page for local_aynurasurveys.
@@ -72,7 +72,7 @@ echo html_writer::tag('p', 'Base URL: ' . html_writer::tag('code', s($baseurl)))
 echo html_writer::tag('p', 'API Key: ' . html_writer::tag('code', substr($apikey, 0, 6) . str_repeat('*', max(0, strlen($apikey) - 6))));
 
 // ------------------------------------------------------------------
-// Helper: run a test and display results
+// Helper: run a test and display results.
 // ------------------------------------------------------------------
 /**
  * Run a connectivity test and return formatted result HTML
@@ -133,7 +133,8 @@ function run_test(string $label, string $url, string $apikey): void {
 
     // Detect HTML response — wrong Base URL.
     if (str_starts_with(trim($raw), '<')) {
-        echo html_writer::tag('p',
+        echo html_writer::tag(
+            'p',
             '⛔ Response is HTML, not JSON. Your Base URL points to the web frontend, not the API. ' .
             'Change it to: <code>https://frturwmbnmqdeangsmnp.supabase.co/functions/v1/plugin-api</code>',
             ['class' => 'text-danger font-weight-bold']
@@ -143,7 +144,8 @@ function run_test(string $label, string $url, string $apikey): void {
     // Parsed structure summary (for /surveys).
     if ($decoded !== null && isset($decoded['surveys'])) {
         $count = count($decoded['surveys']);
-        echo html_writer::tag('p',
+        echo html_writer::tag(
+            'p',
             html_writer::tag('strong', "✓ Found {$count} survey(s) in response[surveys]"),
             ['class' => 'text-success']
         );
@@ -152,7 +154,8 @@ function run_test(string $label, string $url, string $apikey): void {
             echo html_writer::tag('p', 'First survey keys: ' . html_writer::tag('code', implode(', ', array_keys($first))));
         }
     } else if ($decoded !== null && is_array($decoded) && !isset($decoded['surveys'])) {
-        echo html_writer::tag('p',
+        echo html_writer::tag(
+            'p',
             html_writer::tag('strong', '⚠ Response is an array/object but has no "surveys" key. Top-level keys: ')
             . html_writer::tag('code', implode(', ', array_keys($decoded))),
             ['class' => 'text-warning']
@@ -164,7 +167,7 @@ function run_test(string $label, string $url, string $apikey): void {
 }
 
 // ------------------------------------------------------------------
-// Run tests
+// Run tests.
 // ------------------------------------------------------------------
 
 echo html_writer::tag('h4', '1. Ping', ['class' => 'mt-4']);
@@ -180,7 +183,7 @@ echo html_writer::tag('h4', '4. Surveys — no filter', ['class' => 'mt-4']);
 run_test('GET /surveys (no params)', $baseurl . '/surveys', $apikey);
 
 // ------------------------------------------------------------------
-// Back link
+// Back link.
 // ------------------------------------------------------------------
 echo '</div>'; // hs-card
 echo '</div></div>'; // hs-content + hs-wrap
